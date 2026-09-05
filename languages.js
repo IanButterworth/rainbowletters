@@ -348,6 +348,6 @@ window.RL_LANGUAGES = (() => {
     },
   };
 
-  // Spanish first, as requested; the rest in the order they appear in the picker.
-  return { order: ['es', 'en', 'sv', 'fr', 'de', 'pt', 'it'], data };
+  // The order the picker shows them in; the first is also the fallback default.
+  return { order: ['en', 'es', 'sv', 'fr', 'de', 'pt', 'it'], data };
 })();
