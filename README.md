@@ -11,7 +11,7 @@ python3 -m http.server 8000
 # then open http://localhost:8000
 ```
 
-The live site is published with GitHub Pages from the `main` branch, root folder, so pushing to `main` updates it within a minute.
+The live site is published with GitHub Pages from the `main` branch, root folder, so pushing to `main` updates it within a minute. GitHub Pages tells browsers to cache files for 10 minutes, so when `style.css`, `languages.js` or `app.js` change, bump the `?v=` number on their tags in `index.html`; otherwise a visitor can get the new page with the old scripts until the cache expires.
 
 ## What is on screen
 
