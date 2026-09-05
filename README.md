@@ -23,6 +23,10 @@ The live site is published with GitHub Pages from the `main` branch, root folder
 - Moving the mouse leaves a rainbow trail.
 - Top-right buttons: 🎵 toggles the background music (remembered between visits), ⛶ goes full screen.
 
+## Languages
+
+Spanish, English, Swedish, French, German, Portuguese and Italian. Pick one on the start screen or with the language button in the top-right corner; the choice is remembered. Each language has its own letter pictures (in Spanish, G pops a gato), its own words for the emoji showers, its own on-screen text, and a matching speech voice. Words match without accents, so typing MAMA finds MAMÁ and the accented spelling is what gets spoken. Everything per language lives in `languages.js`, so adding one is a matter of copying a block.
+
 Sounds are synthesised in the browser with Web Audio, and the letters and words are spoken with the browser's built-in speech voices, so nothing is downloaded and it works offline once loaded.
 
 ## Keeping her on the page

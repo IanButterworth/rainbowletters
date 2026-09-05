@@ -9,47 +9,10 @@
   const MAX_CHIPS = 8;      // previously typed words shown at the bottom
   const MAX_UNICORNS = 3;
 
-  const LETTER_EMOJI = {
-    A: '🍎', B: '🐝', C: '🐱', D: '🐶', E: '🐘', F: '🐸', G: '🍇', H: '💖', I: '🍦',
-    J: '🧃', K: '🪁', L: '🦁', M: '🌙', N: '🍜', O: '🐙', P: '🐷', Q: '👸', R: '🌈',
-    S: '⭐', T: '🐯', U: '🦄', V: '🎻', W: '🐳', X: '🩻', Y: '🧶', Z: '🦓',
-    0: '0️⃣', 1: '1️⃣', 2: '2️⃣', 3: '3️⃣', 4: '4️⃣', 5: '5️⃣', 6: '6️⃣', 7: '7️⃣', 8: '8️⃣', 9: '9️⃣',
-  };
+  const DIGIT_EMOJI = { 0: '0️⃣', 1: '1️⃣', 2: '2️⃣', 3: '3️⃣', 4: '4️⃣', 5: '5️⃣', 6: '6️⃣', 7: '7️⃣', 8: '8️⃣', 9: '9️⃣' };
 
-  const WORD_EMOJI = {
-    CAT: '🐱', KITTY: '🐱', KITTEN: '🐱', DOG: '🐶', PUPPY: '🐶', FISH: '🐟', BIRD: '🐦', BEE: '🐝',
-    FROG: '🐸', PIG: '🐷', COW: '🐮', DUCK: '🦆', BEAR: '🐻', BUNNY: '🐰', RABBIT: '🐰', HORSE: '🐴',
-    PONY: '🐴', LION: '🦁', TIGER: '🐯', MONKEY: '🐵', ELEPHANT: '🐘', GIRAFFE: '🦒', ZEBRA: '🦓',
-    OWL: '🦉', BUTTERFLY: '🦋', BUG: '🐛', LADYBUG: '🐞', SNAIL: '🐌', TURTLE: '🐢', WHALE: '🐳',
-    DOLPHIN: '🐬', OCTOPUS: '🐙', PENGUIN: '🐧', CHICKEN: '🐔', SHEEP: '🐑', MOUSE: '🐭', DINO: '🦖',
-    DINOSAUR: '🦖', DRAGON: '🐉', SHARK: '🦈', CRAB: '🦀', UNICORN: '🦄', UNICORNS: '🦄',
-    SUN: '☀️', MOON: '🌙', STAR: '⭐', STARS: '⭐', RAINBOW: '🌈', CLOUD: '☁️', RAIN: '🌧️', SNOW: '❄️',
-    SNOWMAN: '⛄', FLOWER: '🌸', FLOWERS: '🌸', TREE: '🌳', ROSE: '🌹', SUNFLOWER: '🌻', LEAF: '🍃',
-    EARTH: '🌍', PLANET: '🪐', ROCKET: '🚀',
-    HEART: '💖', HEARTS: '💖', LOVE: '💖', HUG: '🤗', KISS: '😘', HAPPY: '😊', SMILE: '😊',
-    SILLY: '🤪', FUNNY: '😂', SLEEPY: '😴', WOW: '🤩', YAY: '🎉', PARTY: '🎉', FUN: '🎉',
-    HI: '👋', HELLO: '👋', BYE: '👋', YES: '👍', NO: '🙅', OK: '👌',
-    MOM: '👩', MUM: '👩', MOMMY: '👩', MUMMY: '👩', MAMA: '👩', DAD: '👨', DADDY: '👨', PAPA: '👨',
-    BABY: '👶', GRANDMA: '👵', NANA: '👵', GRANNY: '👵', GRANDPA: '👴', SISTER: '👧', BROTHER: '👦',
-    FRIEND: '🧑‍🤝‍🧑', ME: '🙋', YOU: '👉',
-    CAKE: '🎂', BIRTHDAY: '🎂', APPLE: '🍎', BANANA: '🍌', STRAWBERRY: '🍓', GRAPES: '🍇', ORANGE: '🍊',
-    PIZZA: '🍕', COOKIE: '🍪', COOKIES: '🍪', CANDY: '🍬', LOLLIPOP: '🍭', ICECREAM: '🍦', DONUT: '🍩',
-    EGG: '🥚', MILK: '🥛', CHEESE: '🧀', BREAD: '🍞', CARROT: '🥕', WATERMELON: '🍉', CHERRY: '🍒',
-    PEACH: '🍑', PEAR: '🍐', LEMON: '🍋', CUPCAKE: '🧁', CHOCOLATE: '🍫', HONEY: '🍯', JUICE: '🧃',
-    CAR: '🚗', BUS: '🚌', TRUCK: '🚚', TRAIN: '🚂', PLANE: '✈️', BOAT: '⛵', BIKE: '🚲', TRACTOR: '🚜',
-    BALL: '⚽', BOOK: '📚', HAT: '🎩', SHOE: '👟', SHOES: '👟', SOCK: '🧦', SOCKS: '🧦', DRESS: '👗',
-    CROWN: '👑', PRINCESS: '👸', PRINCE: '🤴', QUEEN: '👸', KING: '🤴', CASTLE: '🏰', FAIRY: '🧚',
-    MAGIC: '✨', WAND: '🪄', MERMAID: '🧜‍♀️', ROBOT: '🤖', GHOST: '👻', PIRATE: '🏴‍☠️',
-    SPARKLE: '✨', SPARKLES: '✨', GLITTER: '✨', BALLOON: '🎈', BALLOONS: '🎈', GIFT: '🎁',
-    PRESENT: '🎁', MUSIC: '🎵', SONG: '🎵', DANCE: '💃', DRUM: '🥁', PIANO: '🎹', GUITAR: '🎸',
-    RED: '🔴', BLUE: '🔵', GREEN: '🟢', YELLOW: '🟡', PINK: '🩷', PURPLE: '🟣', BLACK: '⚫', WHITE: '⚪',
-    ONE: '1️⃣', TWO: '2️⃣', THREE: '3️⃣', FOUR: '4️⃣', FIVE: '5️⃣', SIX: '6️⃣', SEVEN: '7️⃣', EIGHT: '8️⃣',
-    NINE: '9️⃣', TEN: '🔟', ABC: '🔤',
-    WATER: '💧', BATH: '🛁', BED: '🛏️', HOUSE: '🏠', HOME: '🏠', SCHOOL: '🏫', PARK: '🎡', BEACH: '🏖️',
-    DOLL: '🪆', TOY: '🧸', TEDDY: '🧸', PUZZLE: '🧩', KITE: '🪁', BUBBLE: '🫧', BUBBLES: '🫧',
-    EYE: '👁️', EYES: '👀', NOSE: '👃', EAR: '👂', HAND: '🖐️', FOOT: '🦶', TOOTH: '🦷',
-    POOP: '💩', POO: '💩', BOO: '👻', ZOO: '🦁', FARM: '🚜', SEA: '🌊', OCEAN: '🌊',
-  };
+  // Language packs (letter pictures, word emoji, UI text, voices) live in languages.js.
+  const LANGS = window.RL_LANGUAGES;
 
   const BURST_EMOJI = ['✨', '⭐', '🌟', '💖', '💗', '🌈', '🌸', '🍬', '🎀', '🫧', '💫', '🦄'];
   const PASTELS = ['#ff8fd0', '#ffb3c6', '#ffd97d', '#9ee7a0', '#8fd0ff', '#c9a7ff', '#ffc09f', '#a5f3fc', '#fff176'];
@@ -384,23 +347,28 @@
   const Voice = (() => {
     const synth = window.speechSynthesis;
     let voice = null;
-    const PREFERRED = ['Samantha', 'Karen', 'Moira', 'Tessa', 'Google US English', 'Google UK English Female',
-      'Microsoft Aria', 'Microsoft Zira', 'Daniel', 'Alex'];
+    let pack = null;   // the current language pack: preferred voice names and a BCP 47 tag
 
+    // Pick a voice for the current language: a preferred name first, then any
+    // voice for that language. With no match the utterance still carries the
+    // language tag so the engine can choose.
     function choose() {
-      if (!synth) return;
-      const voices = synth.getVoices();
-      if (!voices.length) return;
-      for (const name of PREFERRED) {
+      if (!synth || !pack) return;
+      const code = pack.speech.slice(0, 2).toLowerCase();
+      const voices = synth.getVoices().filter((v) => (v.lang || '').toLowerCase().replace('_', '-').startsWith(code));
+      voice = null;
+      for (const name of pack.voices) {
         const v = voices.find((x) => x.name.includes(name));
         if (v) { voice = v; return; }
       }
-      voice = voices.find((x) => x.lang && x.lang.toLowerCase().startsWith('en')) || voices[0];
+      voice = voices.find((v) => v.default) || voices.find((v) => v.localService) || voices[0] || null;
     }
 
-    if (synth) {
+    if (synth) synth.addEventListener('voiceschanged', choose);
+
+    function setLanguage(langPack) {
+      pack = langPack;
       choose();
-      synth.addEventListener('voiceschanged', choose);
     }
 
     // Never call speechSynthesis.cancel(): on Chrome for macOS cancelling an
@@ -414,6 +382,7 @@
     function speakNow(req) {
       const u = new SpeechSynthesisUtterance(req.text);
       if (voice) { u.voice = voice; u.lang = voice.lang; }
+      else if (pack) u.lang = pack.speech;
       u.rate = req.rate;
       u.pitch = req.pitch;
       current = u;
@@ -440,7 +409,7 @@
       else speakNow(req);
     }
 
-    return { say };
+    return { say, setLanguage };
   })();
 
   // ---------------------------------------------------------------------------
@@ -727,6 +696,108 @@
   })();
 
   // ---------------------------------------------------------------------------
+  // Languages
+  // ---------------------------------------------------------------------------
+
+  const btnLang = $('btn-lang');
+  const langPanel = $('langpanel');
+  const startLangs = $('start-langs');
+
+  let langCode = LANGS.order[0];
+  let lang = LANGS.data[langCode];
+  const wordIndex = {};   // language code -> normalized word -> { word, emoji }
+
+  // Accent-insensitive key so MAMA finds MAMÁ and NINO finds NIÑO.
+  const normalize = (s) => s.normalize('NFD').replace(/\p{M}/gu, '');
+
+  function indexFor(code) {
+    if (!wordIndex[code]) {
+      const map = {};
+      for (const [word, emoji] of Object.entries(LANGS.data[code].words)) {
+        const key = normalize(word);
+        if (!map[key]) map[key] = { word, emoji };
+      }
+      wordIndex[code] = map;
+    }
+    return wordIndex[code];
+  }
+
+  function lookupWord(word) {
+    return indexFor(langCode)[normalize(word)] || null;
+  }
+
+  function letterEmoji(ch) {
+    if (isDigit(ch)) return DIGIT_EMOJI[ch] || null;
+    return lang.letters[ch] || lang.letters[normalize(ch)] || null;
+  }
+
+  function setText(id, text) {
+    const el = $(id);
+    if (el) el.textContent = text;
+  }
+
+  function renderLangChips(container) {
+    if (!container) return;
+    container.textContent = '';
+    for (const code of LANGS.order) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.tabIndex = -1;
+      b.className = 'lang' + (code === langCode ? ' on' : '');
+      b.textContent = LANGS.data[code].name;
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        setLanguage(code, true);
+        closeLangPanel();
+        b.blur();
+      });
+      container.appendChild(b);
+    }
+  }
+
+  function setLanguage(code, announce) {
+    if (!LANGS.data[code]) return;
+    langCode = code;
+    lang = LANGS.data[code];
+    try { localStorage.setItem('rl-lang', code); } catch (_) { /* ignore */ }
+    document.documentElement.lang = code;
+    document.title = lang.ui.title;
+    setText('start-title', lang.ui.title);
+    setText('start-tap', lang.ui.tap);
+    setText('hint-text', lang.ui.hint);
+    btnMusic.title = lang.ui.music;
+    btnFull.title = lang.ui.fullscreen;
+    btnLang.title = lang.ui.language;
+    btnLang.textContent = code.toUpperCase();
+    Voice.setLanguage(lang);
+    renderLangChips(langPanel);
+    renderLangChips(startLangs);
+    if (announce && started) Voice.say(lang.ui.greeting);
+  }
+
+  function closeLangPanel() {
+    langPanel.classList.add('hidden');
+  }
+
+  btnLang.addEventListener('click', (e) => {
+    e.preventDefault();
+    langPanel.classList.toggle('hidden');
+    btnLang.blur();
+  });
+
+  // Remembered choice, else the browser's language if we have it, else the first option.
+  function initialLang() {
+    try {
+      const saved = localStorage.getItem('rl-lang');
+      if (saved && LANGS.data[saved]) return saved;
+    } catch (_) { /* ignore */ }
+    const wanted = (navigator.languages || [navigator.language || '']).map((l) => l.slice(0, 2).toLowerCase());
+    return wanted.find((l) => LANGS.data[l]) || LANGS.order[0];
+  }
+
+  setLanguage(initialLang(), false);
+
+  // ---------------------------------------------------------------------------
   // Letters and words
   // ---------------------------------------------------------------------------
 
@@ -770,7 +841,7 @@
     const r = el.getBoundingClientRect();
     const cx = r.left + r.width / 2;
     const cy = r.top + r.height / 2;
-    FX.burst(cx, cy, { featured: LETTER_EMOJI[ch] || null });
+    FX.burst(cx, cy, { featured: letterEmoji(ch) });
 
     let pitch;
     if (isDigit(ch)) pitch = (parseInt(ch, 10) || 0) / 9;
@@ -778,7 +849,7 @@
     else pitch = (ch.codePointAt(0) % 26) / 25;
     Sound.pling(pitch);
     // Lowercase: voices read an uppercase letter as "capital L".
-    Voice.say(ch.toLocaleLowerCase());
+    Voice.say(ch.toLocaleLowerCase(langCode));
     hideHint();
   }
 
@@ -814,7 +885,8 @@
       return;
     }
 
-    const emoji = WORD_EMOJI[word] || null;
+    const entry = lookupWord(word);
+    const emoji = entry ? entry.emoji : null;
 
     // Clone the word so it can fly off while new typing starts immediately.
     const clone = wordEl.cloneNode(true);
@@ -843,7 +915,8 @@
     if (emoji || word.length >= 5) setTimeout(FX.unicorn, 450);
 
     Sound.fanfare(!!emoji);
-    Voice.say(word.toLowerCase(), { rate: 0.85, pitch: 1.2 });
+    // Speak the dictionary spelling when there is one, so MAMA is said "mamá".
+    Voice.say((entry ? entry.word : word).toLocaleLowerCase(langCode), { rate: 0.85, pitch: 1.2 });
     addChip(word, emoji);
     hideHint();
   }
@@ -879,7 +952,7 @@
     btnMusic.textContent = musicPref ? '🎵' : '🔇';
     startEl.classList.add('gone');
     setTimeout(() => startEl.remove(), 800);
-    Voice.say("Let's type some rainbow letters!");
+    Voice.say(lang.ui.greeting);
     FX.confetti(FX.width / 2, FX.height / 2, 80);
     FX.unicorn();
     scheduleHint();
@@ -945,6 +1018,7 @@
     // reload, zoom, address bar...). Close-tab and quit cannot be blocked from
     // a page; beforeunload below adds a confirmation for those.
     e.preventDefault();
+    closeLangPanel();
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.repeat) return;
     if (!started) start();
@@ -966,7 +1040,10 @@
 
   let lastTap = 0;
   window.addEventListener('pointerdown', (e) => {
-    if (e.target.closest && e.target.closest('button')) return;
+    const t = e.target && e.target.closest ? e.target : null;
+    if (!t || !t.closest('#langpanel, #btn-lang')) closeLangPanel();
+    // Buttons, including the language chips, must not start the game or spark.
+    if (t && t.closest('button')) return;
     if (!started) start();
     Sound.resume();
     if (e.timeStamp - lastTap < 80) return;

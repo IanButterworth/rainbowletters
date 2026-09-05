@@ -32,7 +32,7 @@
     <div id="hint" class="hidden" aria-hidden="true">
       <div class="hint-inner">
         <span class="hint-emoji">⌨️</span>
-        <span class="hint-text rainbow-text">Type a letter!</span>
+        <span id="hint-text" class="hint-text rainbow-text">Type a letter!</span>
       </div>
     </div>
   </main>
@@ -41,15 +41,18 @@
   <div id="flyers" aria-hidden="true"></div>
 
   <div id="controls">
+    <button id="btn-lang" type="button" tabindex="-1" title="Language">EN</button>
     <button id="btn-music" type="button" tabindex="-1" title="Music on / off">🎵</button>
     <button id="btn-full" type="button" tabindex="-1" title="Full screen">⛶</button>
   </div>
+  <div id="langpanel" class="langs hidden"></div>
 
   <div id="start">
     <div class="start-card">
       <div class="start-unicorn">🦄</div>
-      <h1 class="rainbow-text">Rainbow Letters</h1>
-      <p>Press any key or tap to play</p>
+      <h1 id="start-title" class="rainbow-text">Rainbow Letters</h1>
+      <p id="start-tap">Press any key or tap to play</p>
+      <div id="start-langs" class="langs"></div>
     </div>
   </div>
 
@@ -57,6 +60,7 @@
   <input id="touch-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="characters"
          spellcheck="false" aria-hidden="true" tabindex="-1">
 
+  <script src="languages.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

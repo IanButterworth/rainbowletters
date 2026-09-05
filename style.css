@@ -351,6 +351,59 @@ body {
 
 body.is-full #btn-full { display: none; }
 
+#btn-lang {
+  font-size: 2.4vmin;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- Language picker ---------- */
+
+.langs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1vmin;
+}
+
+.start-card .langs { margin-top: 3vmin; }
+
+.lang {
+  padding: 1vmin 2.4vmin;
+  border: 0.35vmin solid #fff;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.55);
+  color: #b05aa0;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 3vmin;
+  cursor: pointer;
+  box-shadow: 0 0.5vmin 1.2vmin rgba(255, 120, 200, 0.25);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.lang:focus { outline: none; }
+
+.lang.on {
+  background: #fff;
+  color: #e0489a;
+  box-shadow: 0 0 0 0.5vmin rgba(255, 130, 200, 0.55);
+}
+
+#langpanel {
+  position: absolute;
+  top: 10vmin;
+  right: 1.5vmin;
+  z-index: 11;
+  max-width: 60vw;
+  padding: 1.5vmin;
+  border-radius: 3vmin;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+#langpanel.hidden { display: none; }
+
 /* ---------- Start overlay ---------- */
 
 #start {
