@@ -699,8 +699,6 @@
   // Languages
   // ---------------------------------------------------------------------------
 
-  const btnLang = $('btn-lang');
-  const langPanel = $('langpanel');
   const startLangs = $('start-langs');
 
   let langCode = LANGS.order[0];
@@ -747,15 +745,14 @@
       b.textContent = LANGS.data[code].name;
       b.addEventListener('click', (e) => {
         e.preventDefault();
-        setLanguage(code, true);
-        closeLangPanel();
+        setLanguage(code);
         b.blur();
       });
       container.appendChild(b);
     }
   }
 
-  function setLanguage(code, announce) {
+  function setLanguage(code) {
     if (!LANGS.data[code]) return;
     langCode = code;
     lang = LANGS.data[code];
@@ -767,23 +764,9 @@
     setText('hint-text', lang.ui.hint);
     btnMusic.title = lang.ui.music;
     btnFull.title = lang.ui.fullscreen;
-    btnLang.title = lang.ui.language;
-    btnLang.textContent = code.toUpperCase();
     Voice.setLanguage(lang);
-    renderLangChips(langPanel);
     renderLangChips(startLangs);
-    if (announce && started) Voice.say(lang.ui.greeting);
   }
-
-  function closeLangPanel() {
-    langPanel.classList.add('hidden');
-  }
-
-  btnLang.addEventListener('click', (e) => {
-    e.preventDefault();
-    langPanel.classList.toggle('hidden');
-    btnLang.blur();
-  });
 
   // Remembered choice, else the browser's language if we have it, else the first option.
   function initialLang() {
@@ -795,7 +778,7 @@
     return wanted.find((l) => LANGS.data[l]) || LANGS.order[0];
   }
 
-  setLanguage(initialLang(), false);
+  setLanguage(initialLang());
 
   // ---------------------------------------------------------------------------
   // Letters and words
@@ -1018,7 +1001,6 @@
     // reload, zoom, address bar...). Close-tab and quit cannot be blocked from
     // a page; beforeunload below adds a confirmation for those.
     e.preventDefault();
-    closeLangPanel();
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.repeat) return;
     if (!started) start();
@@ -1040,10 +1022,8 @@
 
   let lastTap = 0;
   window.addEventListener('pointerdown', (e) => {
-    const t = e.target && e.target.closest ? e.target : null;
-    if (!t || !t.closest('#langpanel, #btn-lang')) closeLangPanel();
-    // Buttons, including the language chips, must not start the game or spark.
-    if (t && t.closest('button')) return;
+    // Buttons, including the language names on the start screen, must not start the game or spark.
+    if (e.target && e.target.closest && e.target.closest('button')) return;
     if (!started) start();
     Sound.resume();
     if (e.timeStamp - lastTap < 80) return;

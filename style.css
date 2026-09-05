@@ -351,58 +351,37 @@ body {
 
 body.is-full #btn-full { display: none; }
 
-#btn-lang {
-  font-size: 2.4vmin;
-  letter-spacing: 0.05em;
-}
-
-/* ---------- Language picker ---------- */
+/* ---------- Language picker (start screen only) ---------- */
 
 .langs {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1vmin;
+  gap: 0.4vmin 1.2vmin;
+  margin-top: 5vmin;
 }
-
-.start-card .langs { margin-top: 3vmin; }
 
 .lang {
-  padding: 1vmin 2.4vmin;
-  border: 0.35vmin solid #fff;
+  padding: 0.8vmin 1.6vmin;
+  border: 0;
   border-radius: 99px;
-  background: rgba(255, 255, 255, 0.55);
-  color: #b05aa0;
+  background: none;
+  color: rgba(176, 90, 160, 0.55);
   font-family: inherit;
-  font-weight: 700;
-  font-size: 3vmin;
+  font-weight: 600;
+  font-size: 2.2vmin;
   cursor: pointer;
-  box-shadow: 0 0.5vmin 1.2vmin rgba(255, 120, 200, 0.25);
   -webkit-tap-highlight-color: transparent;
 }
+
+.lang:hover { color: #b05aa0; }
 
 .lang:focus { outline: none; }
 
 .lang.on {
-  background: #fff;
   color: #e0489a;
-  box-shadow: 0 0 0 0.5vmin rgba(255, 130, 200, 0.55);
-}
-
-#langpanel {
-  position: absolute;
-  top: 10vmin;
-  right: 1.5vmin;
-  z-index: 11;
-  max-width: 60vw;
-  padding: 1.5vmin;
-  border-radius: 3vmin;
   background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
 }
-
-#langpanel.hidden { display: none; }
 
 /* ---------- Start overlay ---------- */
 
