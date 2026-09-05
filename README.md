@@ -1,0 +1,51 @@
+# Rainbow Letters 🦄
+
+A typing playground for small children. Every key press pops a big rainbow letter onto the screen with sparkles, a music-box note and a voice saying the letter. Space or Enter finishes the word: it wiggles, floats away, a unicorn flies past, and the word is spoken aloud. Real words the child might know (`CAT`, `DOG`, `RAINBOW`, `MUM`, `POOP`...) rain down their matching emoji.
+
+No build step and no dependencies. Open `index.html` in a browser, or serve the folder:
+
+```sh
+python3 -m http.server 8000
+# then open http://localhost:8000
+```
+
+To publish on GitHub Pages: repository Settings → Pages → deploy from the `main` branch, root folder.
+
+## What is on screen
+
+- Type letters or numbers: they appear in a big rainbow row (up to 20; after that the oldest one floats off).
+- Space or Enter: celebrates the word. Finished words collect as little bubbles along the bottom.
+- Backspace: pops the last letter.
+- Any other key, click or tap: sparkles.
+- Key mashing is throttled: bursts of 8 keys go through, then about 8 per second, and holding a key down does not repeat. The voice speaks the current letter and the latest one waiting, never a backlog.
+- Moving the mouse leaves a rainbow trail.
+- Top-right buttons: 🎵 toggles the background music (remembered between visits), ⛶ goes full screen.
+
+Sounds are synthesised in the browser with Web Audio, and the letters and words are spoken with the browser's built-in speech voices, so nothing is downloaded and it works offline once loaded.
+
+## Keeping her on the page
+
+The page does what a web page can to avoid accidental exits:
+
+- No links, forms or scrolling. Right-click, text selection, drag, pinch zoom and pull-to-refresh are disabled.
+- Keyboard shortcuts the browser lets a page intercept (find, print, save, reload, zoom, address bar) are swallowed. Tab and Space cannot move focus to the buttons.
+- The back button and back swipe are neutralised.
+- Closing the tab, reloading or navigating away asks for confirmation once she has started playing.
+
+A browser cannot block Cmd+W, Cmd+T, Cmd+Q or the Mac's Fn/Globe key, so for a fully locked-down session:
+
+- Use the ⛶ button. In Chrome this also locks the keyboard so Escape no longer leaves full screen; hold Escape for a couple of seconds to get out.
+- Or launch Chrome in kiosk mode, which hides all browser chrome:
+
+  ```sh
+  open -na "Google Chrome" --args --kiosk --new-window "http://localhost:8000"
+  ```
+
+- In Chrome, keep "Warn Before Quitting (⌘Q)" enabled in the Chrome menu.
+- On an iPad, use Guided Access (Settings → Accessibility) to pin the browser.
+
+## Files
+
+- `index.html`: page structure.
+- `style.css`: the sky, clouds, rainbow, letter styling and animations.
+- `app.js`: input handling, guards, canvas particles, Web Audio synth and music loop, speech.

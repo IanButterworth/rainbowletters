@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#ffd6f5">
+  <title>Rainbow Letters</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦄</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sky" aria-hidden="true">
+    <div class="sun"></div>
+    <div class="rainbow"></div>
+    <div class="cloud c1"></div>
+    <div class="cloud c2"></div>
+    <div class="cloud c3"></div>
+    <div class="cloud c4"></div>
+    <div class="cloud c5"></div>
+    <div class="ground"></div>
+  </div>
+
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <main id="stage">
+    <div id="word" class="wordrow" aria-live="off"></div>
+    <div id="hint" class="hidden" aria-hidden="true">
+      <div class="hint-inner">
+        <span class="hint-emoji">⌨️</span>
+        <span class="hint-text rainbow-text">Type a letter!</span>
+      </div>
+    </div>
+  </main>
+
+  <div id="garden" aria-hidden="true"></div>
+  <div id="flyers" aria-hidden="true"></div>
+
+  <div id="controls">
+    <button id="btn-music" type="button" tabindex="-1" title="Music on / off">🎵</button>
+    <button id="btn-full" type="button" tabindex="-1" title="Full screen">⛶</button>
+  </div>
+
+  <div id="start">
+    <div class="start-card">
+      <div class="start-unicorn">🦄</div>
+      <h1 class="rainbow-text">Rainbow Letters</h1>
+      <p>Press any key or tap to play</p>
+    </div>
+  </div>
+
+  <!-- Only used on touch devices to summon the on-screen keyboard. -->
+  <input id="touch-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="characters"
+         spellcheck="false" aria-hidden="true" tabindex="-1">
+
+  <script src="app.js"></script>
+</body>
+</html>
