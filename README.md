@@ -1,5 +1,7 @@
 # Rainbow Letters 🦄
 
+**Play it here: https://ianbutterworth.github.io/rainbowletters/**
+
 A typing playground for small children. Every key press pops a big rainbow letter onto the screen with sparkles, a music-box note and a voice saying the letter. Space or Enter finishes the word: it wiggles, floats away, a unicorn flies past, and the word is spoken aloud. Real words the child might know (`CAT`, `DOG`, `RAINBOW`, `MUM`, `POOP`...) rain down their matching emoji.
 
 No build step and no dependencies. Open `index.html` in a browser, or serve the folder:
@@ -9,7 +11,7 @@ python3 -m http.server 8000
 # then open http://localhost:8000
 ```
 
-To publish on GitHub Pages: repository Settings → Pages → deploy from the `main` branch, root folder.
+The live site is published with GitHub Pages from the `main` branch, root folder, so pushing to `main` updates it within a minute.
 
 ## What is on screen
 
