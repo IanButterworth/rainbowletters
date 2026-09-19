@@ -21,11 +21,15 @@ The live site is published with GitHub Pages from the `main` branch, root folder
 - Any other key, click or tap: sparkles.
 - Key mashing is throttled: bursts of 8 keys go through, then about 8 per second, and holding a key down does not repeat. The voice speaks the current letter and the latest one waiting, never a backlog.
 - Moving the mouse leaves a rainbow trail.
-- Top-right buttons: 🎯 toggles word hunt (below), 🎵 toggles the background music, ⛶ goes full screen. The first two are remembered between visits.
+- Top-right buttons: 🎯 steps through the play modes (below), 🎵 toggles the background music, ⛶ goes full screen. Mode and music are remembered between visits.
 
 ## Word hunt
 
-Free play is the default. The 🎯 button switches to a guided mode: the game picks a short word from the emoji dictionary (2 to 5 letters), shows it as faint outlines with the next letter pulsing, says the word, and asks for it one letter at a time, on screen and out loud: "Find C", "Great! Now find A", "That's right! Finally T". A right key fills the slot with the usual sparkles and note. A wrong key is never a buzzer: the letter's picture pops out and the prompt says "That's B! Find C". Finishing the word celebrates as usual with a cheer ("Good job!", "You did it!"), then the next word comes along. Space or Enter repeats the prompt, Backspace undoes the last letter, and after a few seconds idle the prompt is repeated once. Accented letters that are not on a keyboard of their own (É, Ó) accept the plain key; letters that are (Ñ, Å, Ä, Ö) must match.
+Free play is the default. The start screen offers two guided modes as well (the 🎯 button cycles through all three during play). In word hunt the game picks a short word from the emoji dictionary (2 to 5 letters), shows it as faint outlines with the next letter pulsing, says the word, and asks for it one letter at a time, on screen and out loud: "Find C", "Great! Now find A", "That's right! Finally T". A right key fills the slot with the usual sparkles and note. A wrong key is never a buzzer: the letter's picture pops out and the prompt says "That's B! Find C". Finishing the word celebrates as usual with a cheer ("Good job!", "You did it!"), then the next word comes along. Space or Enter repeats the prompt, Backspace undoes the last letter, and after a few seconds idle the prompt is repeated once. Accented letters that are not on a keyboard of their own (É, Ó) accept the plain key; letters that are (Ñ, Å, Ä, Ö) must match.
+
+"Word hunt, no hints" is the same game without the letter names: the word is said and shown as outlines, the next slot pulses, and each letter is only named once it has been found. A wrong key gets a small shake of the word and a soft "uh-uh" instead of a spoken nudge.
+
+A note on the voices: a letter on its own is spoken in lowercase ("a" is read as the letter; "A" alone is read as "capital A"), but inside a sentence it must be uppercase ("Find a" is read as "find uh", "Find A" as the letter). This holds for the Apple voices in every language here.
 
 ## Languages
 

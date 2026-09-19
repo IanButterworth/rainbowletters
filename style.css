@@ -200,6 +200,19 @@ body {
   animation: bye 0.35s ease-in forwards;
 }
 
+/* Word hunt: a wrong key in the no-hints mode gives the row a small shake */
+
+.wordrow.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-1.2vmin); }
+  50%      { transform: translateX(1vmin); }
+  75%      { transform: translateX(-0.6vmin); }
+}
+
 /* Word hunt: the slots still to be found, the next one pulsing */
 
 .letter.ghost {
@@ -432,16 +445,20 @@ body {
 
 body.is-full #btn-full { display: none; }
 
-/* ---------- Language picker (start screen only) ---------- */
+/* ---------- Mode and language pickers (start screen only) ---------- */
 
+.modes,
 .langs {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.4vmin 1.2vmin;
-  margin-top: 5vmin;
+  margin-top: 1.5vmin;
 }
 
+.modes { margin-top: 5vmin; }
+
+.mode,
 .lang {
   padding: 0.8vmin 1.6vmin;
   border: 0;
@@ -455,10 +472,13 @@ body.is-full #btn-full { display: none; }
   -webkit-tap-highlight-color: transparent;
 }
 
+.mode:hover,
 .lang:hover { color: #b05aa0; }
 
+.mode:focus,
 .lang:focus { outline: none; }
 
+.mode.on,
 .lang.on {
   color: #e0489a;
   background: rgba(255, 255, 255, 0.6);

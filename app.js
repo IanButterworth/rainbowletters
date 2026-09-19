@@ -9,6 +9,11 @@
   const MAX_CHIPS = 8;      // previously typed words shown at the bottom
   const MAX_UNICORNS = 3;
 
+  // Free play, word hunt with every letter named, and word hunt where the
+  // letters are only named once found. The 🎯 button cycles through them.
+  const MODES = ['free', 'hunt', 'quiet'];
+  const MODE_ICON = { free: '🎯', hunt: '🎯', quiet: '🤫' };
+
   const DIGIT_EMOJI = { 0: '0️⃣', 1: '1️⃣', 2: '2️⃣', 3: '3️⃣', 4: '4️⃣', 5: '5️⃣', 6: '6️⃣', 7: '7️⃣', 8: '8️⃣', 9: '9️⃣' };
 
   // Language packs (letter pictures, word emoji, UI text, voices) live in languages.js.
@@ -29,6 +34,7 @@
   const garden = $('garden');
   const flyersEl = $('flyers');
   const startEl = $('start');
+  const startModes = $('start-modes');
   const guideEl = $('guide');
   const guideEmoji = $('guide-emoji');
   const guideMsg = $('guide-msg');
@@ -45,11 +51,13 @@
 
   let started = false;
   let musicPref = true;
-  let guidePref = false;
+  let modePref = 'free';
   try {
     musicPref = localStorage.getItem('rl-music') !== 'off';
-    guidePref = localStorage.getItem('rl-guide') === 'on';
+    // rl-guide was the on/off switch before there were three modes.
+    modePref = localStorage.getItem('rl-mode') || (localStorage.getItem('rl-guide') === 'on' ? 'hunt' : 'free');
   } catch (_) { /* private mode */ }
+  if (!MODES.includes(modePref)) modePref = 'free';
 
   // ---------------------------------------------------------------------------
   // Sound: Web Audio synth for effects and a looping music-box tune.
@@ -326,6 +334,25 @@
       o.stop(t + 0.22);
     }
 
+    // A soft "uh-uh": two low notes stepping down, for wrong keys in the no-hints hunt.
+    function nope() {
+      if (!ctx) return;
+      const t = ctx.currentTime;
+      [[196, 0], [156, 0.14]].forEach(([f, dt]) => {
+        const o = ctx.createOscillator();
+        o.type = 'triangle';
+        o.frequency.setValueAtTime(f, t + dt);
+        const g = ctx.createGain();
+        g.gain.setValueAtTime(0.0001, t + dt);
+        g.gain.exponentialRampToValueAtTime(0.16, t + dt + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dt + 0.16);
+        o.connect(g);
+        g.connect(sfx);
+        o.start(t + dt);
+        o.stop(t + dt + 0.18);
+      });
+    }
+
     function sparkle() {
       if (!ctx) return;
       const t = ctx.currentTime;
@@ -345,7 +372,7 @@
       whoosh(t, big ? 0.16 : 0.1);
     }
 
-    return { init, resume, suspend, startMusic, stopMusic, pling, pop, sparkle, fanfare };
+    return { init, resume, suspend, startMusic, stopMusic, pling, pop, nope, sparkle, fanfare };
   })();
 
   // ---------------------------------------------------------------------------
@@ -765,6 +792,24 @@
     }
   }
 
+  function renderModeChips(container) {
+    if (!container) return;
+    container.textContent = '';
+    for (const mode of MODES) {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.tabIndex = -1;
+      b.className = 'mode' + (mode === modePref ? ' on' : '');
+      b.textContent = lang.ui.modes[mode];
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        Guide.set(mode);
+        b.blur();
+      });
+      container.appendChild(b);
+    }
+  }
+
   function setLanguage(code) {
     if (!LANGS.data[code]) return;
     langCode = code;
@@ -775,10 +820,11 @@
     setText('start-title', lang.ui.title);
     setText('start-tap', lang.ui.tap);
     setText('hint-text', lang.ui.hint);
-    btnGuide.title = lang.ui.guide;
+    btnGuide.title = lang.ui.modes[modePref];
     btnMusic.title = lang.ui.music;
     btnFull.title = lang.ui.fullscreen;
     Voice.setLanguage(lang);
+    renderModeChips(startModes);
     renderLangChips(startLangs);
   }
 
@@ -943,12 +989,14 @@
   // ---------------------------------------------------------------------------
   // Word hunt: a guided mode that picks a short word from the dictionary and
   // asks for it one letter at a time. A wrong key gets a friendly nudge, never
-  // a buzzer.
+  // a buzzer. The no-hints variant names a letter only once it is found, and
+  // answers a wrong key with a small shake and a soft "uh-uh".
   // ---------------------------------------------------------------------------
 
   const Guide = (() => {
     const MIN = 2, MAX = 5;   // word lengths worth hunting for
-    let on = false;
+    const on = () => modePref !== 'free';
+    const quiet = () => modePref === 'quiet';
     let chars = [];           // the target spelling, one letter per slot
     let spoken = '';          // the same, as the voice says it
     let hue = 0;
@@ -1002,12 +1050,14 @@
       inner.classList.add('wiggle');
     }
 
-    // Lowercase for the voice, so it reads "c" rather than "capital C".
+    // Uppercase inside a sentence: the voices read "Find a" as the article
+    // ("find uh") but "Find A" as the letter. Alone, a letter goes lowercase
+    // instead, since "A" on its own is read as "capital A".
     function say(template, pressed) {
       const next = chars[letters.length] || '';
       Voice.say(template
-        .replace('{letter}', next.toLocaleLowerCase(langCode))
-        .replace('{pressed}', (pressed || '').toLocaleLowerCase(langCode)));
+        .replace('{letter}', next.toLocaleUpperCase(langCode))
+        .replace('{pressed}', (pressed || '').toLocaleUpperCase(langCode)));
     }
 
     // A random phrase from the list, never the same one twice running.
@@ -1018,8 +1068,9 @@
       return t;
     }
 
-    // "Find C", "Now find A", "Now T", "Finally S".
+    // "Find C", "Now find A", "Now T", "Finally S"; nothing in the no-hints hunt.
     function ask() {
+      if (quiet()) return '';
       const i = letters.length;
       if (i === 0) return lang.ui.find;
       if (i === chars.length - 1) return lang.ui.last;
@@ -1030,9 +1081,10 @@
     // since it is already on screen as the row of slots.
     function prompt({ cheer = '', word = false } = {}) {
       clearTimeout(revertTimer);
-      const text = cheer ? cheer + ' ' + ask() : ask();
+      const text = [cheer, ask()].filter(Boolean).join(' ');
       show(text);
-      say(word ? spoken + '! ' + text : text);
+      const speech = word ? [spoken + '!', text].filter(Boolean).join(' ') : text;
+      if (speech) say(speech);
     }
 
     function mark() {
@@ -1075,8 +1127,16 @@
       else { mark(); prompt({ cheer: phrase(lang.ui.yes) }); }
     }
 
-    // Name what they pressed, show its picture, and ask again.
+    // Name what they pressed, show its picture, and ask again. The no-hints
+    // hunt just shakes the word and hums a soft "uh-uh".
     function miss(ch) {
+      if (quiet()) {
+        Sound.nope();
+        wordEl.classList.remove('shake');
+        void wordEl.offsetWidth;
+        wordEl.classList.add('shake');
+        return;
+      }
       FX.burst(rand(FX.width * 0.2, FX.width * 0.8), rand(FX.height * 0.25, FX.height * 0.75), { count: 10, featured: letterEmoji(ch) });
       Sound.sparkle();
       clearTimeout(revertTimer);
@@ -1128,13 +1188,17 @@
       if (!busy) prompt({ word: true });
     }
 
-    function set(v) {
-      on = !!v;
-      btnGuide.classList.toggle('on', on);
-      try { localStorage.setItem('rl-guide', on ? 'on' : 'off'); } catch (_) { /* ignore */ }
+    function set(mode) {
+      modePref = mode;
+      try { localStorage.setItem('rl-mode', mode); } catch (_) { /* ignore */ }
+      btnGuide.textContent = MODE_ICON[mode];
+      btnGuide.title = lang.ui.modes[mode];
+      btnGuide.classList.toggle('on', on());
+      renderModeChips(startModes);
       clearTimeout(nextTimer);
       clearTimeout(revertTimer);
-      if (on) {
+      if (!started) return;   // start() begins the hunt once play begins
+      if (on()) {
         hideHint();
         begin();
       } else {
@@ -1146,7 +1210,16 @@
       }
     }
 
-    return { key, remind, set, get on() { return on; } };
+    // The 🎯 button steps through the modes.
+    function cycle() {
+      set(MODES[(MODES.indexOf(modePref) + 1) % MODES.length]);
+    }
+
+    function start() {
+      if (on()) { hideHint(); begin(); }
+    }
+
+    return { key, remind, set, cycle, start, get on() { return on(); } };
   })();
 
   // ---------------------------------------------------------------------------
@@ -1186,7 +1259,7 @@
     FX.confetti(FX.width / 2, FX.height / 2, 80);
     FX.unicorn();
     scheduleHint();
-    if (guidePref) Guide.set(true);
+    Guide.start();
   }
 
   // ---------------------------------------------------------------------------
@@ -1305,7 +1378,7 @@
   btnGuide.addEventListener('click', (e) => {
     e.preventDefault();
     if (!started) start();
-    Guide.set(!Guide.on);
+    Guide.cycle();
     btnGuide.blur();
   });
 
@@ -1350,7 +1423,8 @@
   document.addEventListener('webkitfullscreenchange', onFullscreenChange);
 
   btnMusic.textContent = musicPref ? '🎵' : '🔇';
-  btnGuide.classList.toggle('on', guidePref);
+  btnGuide.textContent = MODE_ICON[modePref];
+  btnGuide.classList.toggle('on', modePref !== 'free');
 
   // ---------------------------------------------------------------------------
   // Guards against accidental navigation and other surprises
