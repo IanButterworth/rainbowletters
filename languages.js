@@ -30,6 +30,8 @@ window.RL_LANGUAGES = (() => {
         then: 'Ahora la {letter}',
         last: 'Por último, la {letter}',
         oops: '¡Esa es la {pressed}! Busca la {letter}',
+        praise: ['¡Muy bien!', '¡Bravo!', '¡Lo has conseguido!', '¡Genial!', '¡Fantástico!', '¡Estupendo!'],
+        yes: ['¡Eso es!', '¡Sí!', '¡Perfecto!', '¡Bien!', '¡Exacto!'],
       },
       letters: pairs(`
         A 🌳 B 🐳 C 🐰 D 🦖 E 🐘 F 🌸 G 🐱 H 🍦 I 🦎 J 🦒 K 🐨 L 🦁 M 🦋
@@ -84,6 +86,8 @@ window.RL_LANGUAGES = (() => {
         then: 'Now {letter}',
         last: 'Finally {letter}',
         oops: "That's {pressed}! Find {letter}",
+        praise: ['Good job!', 'Well done!', 'You did it!', 'Hooray!', 'Amazing!', 'Brilliant!'],
+        yes: ['Great!', "That's right!", 'Yes!', 'Nice one!', 'Perfect!', 'Lovely!'],
       },
       letters: pairs(`
         A 🍎 B 🐝 C 🐱 D 🐶 E 🐘 F 🐸 G 🍇 H 💖 I 🍦 J 🧃 K 🪁 L 🦁 M 🌙
@@ -138,6 +142,8 @@ window.RL_LANGUAGES = (() => {
         then: 'Maintenant le {letter}',
         last: 'Et pour finir, le {letter}',
         oops: 'Ça, c’est le {pressed} ! Trouve le {letter}',
+        praise: ['Bravo !', 'Bien joué !', 'Tu as réussi !', 'Super !', 'Génial !', 'Fantastique !'],
+        yes: ['Oui !', 'C’est ça !', 'Parfait !', 'Très bien !', 'Exact !'],
       },
       letters: pairs(`
         A ✈️ B 🍌 C 🐱 D 🦖 E 🐘 F 🌸 G 🎂 H 🦉 I 🏝️ J 🧸 K 🐨 L 🦁 M 🏠
@@ -189,6 +195,8 @@ window.RL_LANGUAGES = (() => {
         then: 'Jetzt das {letter}',
         last: 'Und zum Schluss das {letter}',
         oops: 'Das ist das {pressed}! Finde das {letter}',
+        praise: ['Gut gemacht!', 'Super!', 'Toll!', 'Du hast es geschafft!', 'Prima!', 'Klasse!'],
+        yes: ['Genau!', 'Richtig!', 'Ja!', 'Perfekt!', 'Sehr gut!'],
       },
       letters: pairs(`
         A 🍎 B 🐻 C 🤡 D 🐉 E 🐘 F 🐟 G 🦒 H 🐶 I 🦔 J 🧥 K 🐱 L 🦁 M 🐭
@@ -243,6 +251,8 @@ window.RL_LANGUAGES = (() => {
         then: 'Agora o {letter}',
         last: 'E por fim, o {letter}',
         oops: 'Esse é o {pressed}! Encontra o {letter}',
+        praise: ['Muito bem!', 'Boa!', 'Conseguiste!', 'Fantástico!', 'Excelente!', 'Bravo!'],
+        yes: ['Isso!', 'Sim!', 'Perfeito!', 'Certo!', 'Muito bem!'],
       },
       letters: pairs(`
         A 🐝 B ⚽ C 🐶 D 🦖 E 🐘 F 🌸 G 🐱 H 🦛 I 🏝️ J 🐊 K 🥝 L 🦁 M 🐵
@@ -297,6 +307,8 @@ window.RL_LANGUAGES = (() => {
         then: 'Ora la {letter}',
         last: 'E per finire, la {letter}',
         oops: 'Questa è la {pressed}! Trova la {letter}',
+        praise: ['Ben fatto!', 'Ce l’hai fatta!', 'Fantastico!', 'Evviva!', 'Super!', 'Magnifico!'],
+        yes: ['Giusto!', 'Sì!', 'Perfetto!', 'Esatto!', 'Bene!'],
       },
       letters: pairs(`
         A 🐝 B 🍌 C 🐶 D 🦖 E 🐘 F 🌸 G 🐱 H 🏨 I 🏝️ J 👖 K 🐨 L 🦁 M 🍎
@@ -352,6 +364,8 @@ window.RL_LANGUAGES = (() => {
         then: 'Nu {letter}',
         last: 'Och till sist {letter}',
         oops: 'Det är {pressed}! Hitta {letter}',
+        praise: ['Bra jobbat!', 'Duktigt!', 'Du klarade det!', 'Hurra!', 'Toppen!', 'Snyggt!'],
+        yes: ['Rätt!', 'Ja!', 'Perfekt!', 'Precis!', 'Fint!'],
       },
       letters: pairs(`
         A 🐵 B 🐻 C 🚲 D 🐬 E 🐘 F 🐟 G 🐸 H 🐶 I 🦔 J 🍓 K 🐱 L 🦁 M 🌙

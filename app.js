@@ -398,6 +398,9 @@
         if (current !== u) return;
         current = null;
         clearTimeout(watchdog);
+        // A follow-up may call say() and go straight out; the waiting one then keeps waiting.
+        if (req.then) req.then();
+        if (current) return;
         const n = next;
         next = null;
         if (n) speakNow(n);
@@ -410,9 +413,11 @@
       try { synth.speak(u); } catch (_) { done(); }
     }
 
-    function say(text, { rate = 0.9, pitch = 1.15 } = {}) {
+    // `then` runs once this utterance has finished (or been given up on), but
+    // not if it is dropped while waiting.
+    function say(text, { rate = 0.9, pitch = 1.15, then = null } = {}) {
       if (!synth) return;
-      const req = { text, rate, pitch };
+      const req = { text, rate, pitch, then };
       if (current) next = req;
       else speakNow(req);
     }
@@ -883,7 +888,7 @@
     while (garden.children.length > MAX_CHIPS) garden.firstChild.remove();
   }
 
-  function celebrate() {
+  function celebrate(praise) {
     const word = letters.map((l) => l.ch).join('');
     const cx = FX.width / 2;
     const cy = FX.height / 2;
@@ -925,7 +930,12 @@
     Sound.fanfare(!!emoji);
     // Speak the dictionary spelling when there is one, so MAMA is said "mamá".
     const spoken = (entry ? entry.word : word).toLocaleLowerCase(langCode);
-    Voice.say(spoken, { rate: 0.85, pitch: 1.2 });
+    Voice.say(spoken, {
+      rate: 0.85,
+      pitch: 1.2,
+      // Word hunt cheers after the word, brighter and a little quicker.
+      then: praise ? () => Voice.say(praise, { rate: 1, pitch: 1.4 }) : null,
+    });
     addChip(word, emoji, spoken);
     hideHint();
   }
@@ -940,12 +950,14 @@
     const MIN = 2, MAX = 5;   // word lengths worth hunting for
     let on = false;
     let chars = [];           // the target spelling, one letter per slot
+    let spoken = '';          // the same, as the voice says it
     let hue = 0;
     let pool = [];            // shuffled candidates, refilled when empty
     let poolLang = null;
     let busy = false;         // the celebration gap before the next word
     let nextTimer = null;
     let revertTimer = null;
+    const lastPick = new Map();
 
     function nextTarget() {
       if (poolLang !== langCode) { pool = []; poolLang = langCode; }
@@ -998,6 +1010,14 @@
         .replace('{pressed}', (pressed || '').toLocaleLowerCase(langCode)));
     }
 
+    // A random phrase from the list, never the same one twice running.
+    function phrase(list) {
+      const options = list.filter((t) => t !== lastPick.get(list));
+      const t = pick(options.length ? options : list);
+      lastPick.set(list, t);
+      return t;
+    }
+
     // "Find C", "Now find A", "Now T", "Finally S".
     function ask() {
       const i = letters.length;
@@ -1006,10 +1026,13 @@
       return i === 1 ? lang.ui.next : lang.ui.then;
     }
 
-    function prompt() {
+    // A cheer goes on screen and out loud; the word itself is only spoken,
+    // since it is already on screen as the row of slots.
+    function prompt({ cheer = '', word = false } = {}) {
       clearTimeout(revertTimer);
-      show(ask());
-      say(ask());
+      const text = cheer ? cheer + ' ' + ask() : ask();
+      show(text);
+      say(word ? spoken + '! ' + text : text);
     }
 
     function mark() {
@@ -1021,6 +1044,7 @@
       const target = nextTarget();
       if (!target) { set(false); return; }
       chars = [...target.word];
+      spoken = target.word.toLocaleLowerCase(langCode);
       hue = Math.floor(rand(0, 360));
       guideEmoji.textContent = target.emoji;
       wordEl.textContent = '';
@@ -1034,7 +1058,7 @@
       }
       layout();
       mark();
-      prompt();
+      prompt({ word: true });
       guideEl.classList.remove('hidden');
     }
 
@@ -1048,7 +1072,7 @@
       letters.push({ ch, el });
       letterFx(ch, el);
       if (letters.length === chars.length) finish();
-      else { mark(); prompt(); }
+      else { mark(); prompt({ cheer: phrase(lang.ui.yes) }); }
     }
 
     // Name what they pressed, show its picture, and ask again.
@@ -1078,8 +1102,9 @@
     function finish() {
       busy = true;
       clearTimeout(revertTimer);
-      guideEl.classList.add('hidden');
-      celebrate();
+      const cheer = phrase(lang.ui.praise);
+      show(cheer);
+      celebrate(cheer);
       // Let the word be heard and the confetti settle before the next one.
       nextTimer = setTimeout(begin, 2200);
     }
@@ -1090,17 +1115,17 @@
         if (isLetter(k) || isDigit(k)) {
           const ch = k.toLocaleUpperCase();
           if (matches(ch, chars[letters.length])) fill(); else miss(ch);
-        } else if (k === ' ') prompt();
+        } else if (k === ' ') prompt({ word: true });
         else stray();
-      } else if (k === 'Enter') prompt();
+      } else if (k === 'Enter') prompt({ word: true });
       else if (k === 'Backspace' || k === 'Delete') undo();
       else if (!['Escape', 'Shift', 'CapsLock', 'Meta', 'Control', 'Alt'].includes(k)) stray(8, [12, 26]);
       hideHint();
     }
 
-    // Idle: ask again, once.
+    // Idle: say the word and ask again, once.
     function remind() {
-      if (!busy) prompt();
+      if (!busy) prompt({ word: true });
     }
 
     function set(v) {
