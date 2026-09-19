@@ -849,11 +849,18 @@
     hideHint();
   }
 
-  function addChip(word, emoji) {
+  function addChip(word, emoji, spoken) {
     const chip = document.createElement('div');
     chip.className = 'chip';
     chip.style.setProperty('--h', Math.floor(rand(0, 360)));
     chip.textContent = emoji ? `${word} ${emoji}` : word;
+    chip.addEventListener('click', () => {
+      Voice.say(spoken, { rate: 0.85, pitch: 1.2 });
+      // Replay the pop so the tap is visibly acknowledged.
+      chip.style.animation = 'none';
+      void chip.offsetWidth;
+      chip.style.animation = '';
+    });
     garden.appendChild(chip);
     while (garden.children.length > MAX_CHIPS) garden.firstChild.remove();
   }
@@ -899,8 +906,9 @@
 
     Sound.fanfare(!!emoji);
     // Speak the dictionary spelling when there is one, so MAMA is said "mamá".
-    Voice.say((entry ? entry.word : word).toLocaleLowerCase(langCode), { rate: 0.85, pitch: 1.2 });
-    addChip(word, emoji);
+    const spoken = (entry ? entry.word : word).toLocaleLowerCase(langCode);
+    Voice.say(spoken, { rate: 0.85, pitch: 1.2 });
+    addChip(word, emoji, spoken);
     hideHint();
   }
 
