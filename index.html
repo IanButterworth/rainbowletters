@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
   <!-- Bump ?v= whenever style.css, languages.js or app.js change: GitHub Pages caches them for 10 minutes. -->
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
   <div class="sky" aria-hidden="true">
@@ -36,12 +36,19 @@
         <span id="hint-text" class="hint-text rainbow-text">Type a letter!</span>
       </div>
     </div>
+    <div id="guide" class="hidden" aria-hidden="true">
+      <div class="guide-inner">
+        <span id="guide-emoji" class="guide-emoji"></span>
+        <span id="guide-msg" class="guide-msg"></span>
+      </div>
+    </div>
   </main>
 
   <div id="garden" aria-hidden="true"></div>
   <div id="flyers" aria-hidden="true"></div>
 
   <div id="controls">
+    <button id="btn-guide" type="button" tabindex="-1" title="Word hunt on / off">🎯</button>
     <button id="btn-music" type="button" tabindex="-1" title="Music on / off">🎵</button>
     <button id="btn-full" type="button" tabindex="-1" title="Full screen">⛶</button>
   </div>
@@ -59,7 +66,7 @@
   <input id="touch-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="characters"
          spellcheck="false" aria-hidden="true" tabindex="-1">
 
-  <script src="languages.js?v=5"></script>
-  <script src="app.js?v=5"></script>
+  <script src="languages.js?v=6"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

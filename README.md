@@ -21,7 +21,11 @@ The live site is published with GitHub Pages from the `main` branch, root folder
 - Any other key, click or tap: sparkles.
 - Key mashing is throttled: bursts of 8 keys go through, then about 8 per second, and holding a key down does not repeat. The voice speaks the current letter and the latest one waiting, never a backlog.
 - Moving the mouse leaves a rainbow trail.
-- Top-right buttons: 🎵 toggles the background music (remembered between visits), ⛶ goes full screen.
+- Top-right buttons: 🎯 toggles word hunt (below), 🎵 toggles the background music, ⛶ goes full screen. The first two are remembered between visits.
+
+## Word hunt
+
+Free play is the default. The 🎯 button switches to a guided mode: the game picks a short word from the emoji dictionary (2 to 5 letters), shows it as faint outlines with the next letter pulsing, and asks for it one letter at a time, on screen and out loud: "Find C", "Now find A", "Finally T". A right key fills the slot with the usual sparkles and note. A wrong key is never a buzzer: the letter's picture pops out and the prompt says "That's B! Find C". Finishing the word celebrates as usual, then the next word comes along. Space or Enter repeats the prompt, Backspace undoes the last letter, and after a few seconds idle the prompt is repeated once. Accented letters that are not on a keyboard of their own (É, Ó) accept the plain key; letters that are (Ñ, Å, Ä, Ö) must match.
 
 ## Languages
 

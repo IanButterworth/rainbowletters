@@ -24,6 +24,12 @@ window.RL_LANGUAGES = (() => {
         music: 'Música',
         fullscreen: 'Pantalla completa',
         language: 'Idioma',
+        guide: 'Caza de palabras',
+        find: 'Busca la {letter}',
+        next: 'Ahora busca la {letter}',
+        then: 'Ahora la {letter}',
+        last: 'Por último, la {letter}',
+        oops: '¡Esa es la {pressed}! Busca la {letter}',
       },
       letters: pairs(`
         A 🌳 B 🐳 C 🐰 D 🦖 E 🐘 F 🌸 G 🐱 H 🍦 I 🦎 J 🦒 K 🐨 L 🦁 M 🦋
@@ -72,6 +78,12 @@ window.RL_LANGUAGES = (() => {
         music: 'Music on / off',
         fullscreen: 'Full screen',
         language: 'Language',
+        guide: 'Word hunt on / off',
+        find: 'Find {letter}',
+        next: 'Now find {letter}',
+        then: 'Now {letter}',
+        last: 'Finally {letter}',
+        oops: "That's {pressed}! Find {letter}",
       },
       letters: pairs(`
         A 🍎 B 🐝 C 🐱 D 🐶 E 🐘 F 🐸 G 🍇 H 💖 I 🍦 J 🧃 K 🪁 L 🦁 M 🌙
@@ -120,6 +132,12 @@ window.RL_LANGUAGES = (() => {
         music: 'Musique',
         fullscreen: 'Plein écran',
         language: 'Langue',
+        guide: 'Chasse aux mots',
+        find: 'Trouve le {letter}',
+        next: 'Maintenant, trouve le {letter}',
+        then: 'Maintenant le {letter}',
+        last: 'Et pour finir, le {letter}',
+        oops: 'Ça, c’est le {pressed} ! Trouve le {letter}',
       },
       letters: pairs(`
         A ✈️ B 🍌 C 🐱 D 🦖 E 🐘 F 🌸 G 🎂 H 🦉 I 🏝️ J 🧸 K 🐨 L 🦁 M 🏠
@@ -165,6 +183,12 @@ window.RL_LANGUAGES = (() => {
         music: 'Musik',
         fullscreen: 'Vollbild',
         language: 'Sprache',
+        guide: 'Wörterjagd',
+        find: 'Finde das {letter}',
+        next: 'Finde jetzt das {letter}',
+        then: 'Jetzt das {letter}',
+        last: 'Und zum Schluss das {letter}',
+        oops: 'Das ist das {pressed}! Finde das {letter}',
       },
       letters: pairs(`
         A 🍎 B 🐻 C 🤡 D 🐉 E 🐘 F 🐟 G 🦒 H 🐶 I 🦔 J 🧥 K 🐱 L 🦁 M 🐭
@@ -213,6 +237,12 @@ window.RL_LANGUAGES = (() => {
         music: 'Música',
         fullscreen: 'Tela cheia',
         language: 'Idioma',
+        guide: 'Caça às palavras',
+        find: 'Encontra o {letter}',
+        next: 'Agora encontra o {letter}',
+        then: 'Agora o {letter}',
+        last: 'E por fim, o {letter}',
+        oops: 'Esse é o {pressed}! Encontra o {letter}',
       },
       letters: pairs(`
         A 🐝 B ⚽ C 🐶 D 🦖 E 🐘 F 🌸 G 🐱 H 🦛 I 🏝️ J 🐊 K 🥝 L 🦁 M 🐵
@@ -261,6 +291,12 @@ window.RL_LANGUAGES = (() => {
         music: 'Musica',
         fullscreen: 'Schermo intero',
         language: 'Lingua',
+        guide: 'Caccia alle parole',
+        find: 'Trova la {letter}',
+        next: 'Ora trova la {letter}',
+        then: 'Ora la {letter}',
+        last: 'E per finire, la {letter}',
+        oops: 'Questa è la {pressed}! Trova la {letter}',
       },
       letters: pairs(`
         A 🐝 B 🍌 C 🐶 D 🦖 E 🐘 F 🌸 G 🐱 H 🏨 I 🏝️ J 👖 K 🐨 L 🦁 M 🍎
@@ -310,6 +346,12 @@ window.RL_LANGUAGES = (() => {
         music: 'Musik',
         fullscreen: 'Helskärm',
         language: 'Språk',
+        guide: 'Ordjakt',
+        find: 'Hitta {letter}',
+        next: 'Hitta nu {letter}',
+        then: 'Nu {letter}',
+        last: 'Och till sist {letter}',
+        oops: 'Det är {pressed}! Hitta {letter}',
       },
       letters: pairs(`
         A 🐵 B 🐻 C 🚲 D 🐬 E 🐘 F 🐟 G 🐸 H 🐶 I 🦔 J 🍓 K 🐱 L 🦁 M 🌙

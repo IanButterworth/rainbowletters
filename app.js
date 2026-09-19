@@ -29,6 +29,10 @@
   const garden = $('garden');
   const flyersEl = $('flyers');
   const startEl = $('start');
+  const guideEl = $('guide');
+  const guideEmoji = $('guide-emoji');
+  const guideMsg = $('guide-msg');
+  const btnGuide = $('btn-guide');
   const btnMusic = $('btn-music');
   const btnFull = $('btn-full');
   const touchInput = $('touch-input');
@@ -41,7 +45,11 @@
 
   let started = false;
   let musicPref = true;
-  try { musicPref = localStorage.getItem('rl-music') !== 'off'; } catch (_) { /* private mode */ }
+  let guidePref = false;
+  try {
+    musicPref = localStorage.getItem('rl-music') !== 'off';
+    guidePref = localStorage.getItem('rl-guide') === 'on';
+  } catch (_) { /* private mode */ }
 
   // ---------------------------------------------------------------------------
   // Sound: Web Audio synth for effects and a looping music-box tune.
@@ -762,6 +770,7 @@
     setText('start-title', lang.ui.title);
     setText('start-tap', lang.ui.tap);
     setText('hint-text', lang.ui.hint);
+    btnGuide.title = lang.ui.guide;
     btnMusic.title = lang.ui.music;
     btnFull.title = lang.ui.fullscreen;
     Voice.setLanguage(lang);
@@ -787,7 +796,7 @@
   const letters = [];
 
   function layout() {
-    const n = letters.length;
+    const n = wordEl.querySelectorAll('.letter:not(.bye)').length;
     if (!n) { wordEl.style.fontSize = ''; return; }
     const W = window.innerWidth * 0.94;
     const H = window.innerHeight;
@@ -803,13 +812,8 @@
     setTimeout(() => el.remove(), 380);
   }
 
-  function addChar(ch) {
-    if (letters.length >= MAX_LETTERS) {
-      const oldest = letters.shift();
-      vanish(oldest.el);
-    }
-    const el = document.createElement('span');
-    el.className = 'letter';
+  // The rainbow glyph inside a letter, with its own hue and float phase.
+  function placeGlyph(el, ch) {
     el.style.setProperty('--h', Math.floor(rand(0, 360)));
     el.style.setProperty('--d', (-rand(0, 3)).toFixed(2) + 's');
     const glyph = document.createElement('span');
@@ -817,10 +821,24 @@
     glyph.style.setProperty('--h', el.style.getPropertyValue('--h'));
     glyph.textContent = ch;
     el.appendChild(glyph);
+  }
+
+  function addChar(ch) {
+    if (letters.length >= MAX_LETTERS) {
+      const oldest = letters.shift();
+      vanish(oldest.el);
+    }
+    const el = document.createElement('span');
+    el.className = 'letter';
+    placeGlyph(el, ch);
     wordEl.appendChild(el);
     letters.push({ ch, el });
     layout();
+    letterFx(ch, el);
+  }
 
+  // Sparkles from the letter, a music-box note and its name.
+  function letterFx(ch, el) {
     const r = el.getBoundingClientRect();
     const cx = r.left + r.width / 2;
     const cy = r.top + r.height / 2;
@@ -913,6 +931,200 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Word hunt: a guided mode that picks a short word from the dictionary and
+  // asks for it one letter at a time. A wrong key gets a friendly nudge, never
+  // a buzzer.
+  // ---------------------------------------------------------------------------
+
+  const Guide = (() => {
+    const MIN = 2, MAX = 5;   // word lengths worth hunting for
+    let on = false;
+    let chars = [];           // the target spelling, one letter per slot
+    let hue = 0;
+    let pool = [];            // shuffled candidates, refilled when empty
+    let poolLang = null;
+    let busy = false;         // the celebration gap before the next word
+    let nextTimer = null;
+    let revertTimer = null;
+
+    function nextTarget() {
+      if (poolLang !== langCode) { pool = []; poolLang = langCode; }
+      if (!pool.length) {
+        pool = Object.entries(lang.words)
+          .filter(([w]) => { const n = [...w].length; return n >= MIN && n <= MAX && [...w].every(isLetter); })
+          .map(([word, emoji]) => ({ word, emoji }));
+        for (let i = pool.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [pool[i], pool[j]] = [pool[j], pool[i]];
+        }
+      }
+      return pool.pop();
+    }
+
+    // Accented letters outside the pack's alphabet (É, Ó) accept the plain
+    // key; letters in it (Ñ, Å, Ä, Ö) have a key of their own and must match.
+    function matches(pressed, target) {
+      if (pressed === target) return true;
+      return !lang.letters[target] && normalize(pressed) === normalize(target);
+    }
+
+    // {letter} and {pressed} become big rainbow glyphs on screen.
+    function show(template, pressed) {
+      guideMsg.textContent = '';
+      const next = chars[letters.length] || '';
+      for (const part of template.split(/(\{letter\}|\{pressed\})/)) {
+        if (!part) continue;
+        const span = document.createElement('span');
+        if (part === '{letter}' || part === '{pressed}') {
+          span.className = 'guide-letter rainbow-text';
+          span.style.setProperty('--h', part === '{letter}' ? hue : (hue + 160) % 360);
+          span.textContent = part === '{letter}' ? next : pressed;
+        } else {
+          span.textContent = part;
+        }
+        guideMsg.appendChild(span);
+      }
+      const inner = guideEl.firstElementChild;
+      inner.classList.remove('wiggle');
+      void inner.offsetWidth;
+      inner.classList.add('wiggle');
+    }
+
+    // Lowercase for the voice, so it reads "c" rather than "capital C".
+    function say(template, pressed) {
+      const next = chars[letters.length] || '';
+      Voice.say(template
+        .replace('{letter}', next.toLocaleLowerCase(langCode))
+        .replace('{pressed}', (pressed || '').toLocaleLowerCase(langCode)));
+    }
+
+    // "Find C", "Now find A", "Now T", "Finally S".
+    function ask() {
+      const i = letters.length;
+      if (i === 0) return lang.ui.find;
+      if (i === chars.length - 1) return lang.ui.last;
+      return i === 1 ? lang.ui.next : lang.ui.then;
+    }
+
+    function prompt() {
+      clearTimeout(revertTimer);
+      show(ask());
+      say(ask());
+    }
+
+    function mark() {
+      [...wordEl.children].forEach((el, i) => el.classList.toggle('want', i === letters.length));
+    }
+
+    function begin() {
+      busy = false;
+      const target = nextTarget();
+      if (!target) { set(false); return; }
+      chars = [...target.word];
+      hue = Math.floor(rand(0, 360));
+      guideEmoji.textContent = target.emoji;
+      wordEl.textContent = '';
+      letters.length = 0;
+      for (const ch of chars) {
+        const el = document.createElement('span');
+        el.className = 'letter ghost';
+        el.style.setProperty('--d', (-rand(0, 3)).toFixed(2) + 's');
+        el.textContent = ch;
+        wordEl.appendChild(el);
+      }
+      layout();
+      mark();
+      prompt();
+      guideEl.classList.remove('hidden');
+    }
+
+    function fill() {
+      const i = letters.length;
+      const ch = chars[i];
+      const el = wordEl.children[i];
+      el.classList.remove('ghost', 'want');
+      el.textContent = '';
+      placeGlyph(el, ch);
+      letters.push({ ch, el });
+      letterFx(ch, el);
+      if (letters.length === chars.length) finish();
+      else { mark(); prompt(); }
+    }
+
+    // Name what they pressed, show its picture, and ask again.
+    function miss(ch) {
+      FX.burst(rand(FX.width * 0.2, FX.width * 0.8), rand(FX.height * 0.25, FX.height * 0.75), { count: 10, featured: letterEmoji(ch) });
+      Sound.sparkle();
+      clearTimeout(revertTimer);
+      show(lang.ui.oops, ch);
+      say(lang.ui.oops, ch);
+      revertTimer = setTimeout(() => show(ask()), 2500);
+    }
+
+    function undo() {
+      const last = letters.pop();
+      if (!last) {
+        FX.burst(FX.width / 2, FX.height / 2, { count: 8, size: [12, 26] });
+        Sound.sparkle();
+        return;
+      }
+      last.el.textContent = last.ch;
+      last.el.classList.add('ghost');
+      Sound.pop();
+      mark();
+      prompt();
+    }
+
+    function finish() {
+      busy = true;
+      clearTimeout(revertTimer);
+      guideEl.classList.add('hidden');
+      celebrate();
+      // Let the word be heard and the confetti settle before the next one.
+      nextTimer = setTimeout(begin, 2200);
+    }
+
+    function key(k) {
+      if (busy) { stray(); return; }
+      if ([...k].length === 1) {
+        if (isLetter(k) || isDigit(k)) {
+          const ch = k.toLocaleUpperCase();
+          if (matches(ch, chars[letters.length])) fill(); else miss(ch);
+        } else if (k === ' ') prompt();
+        else stray();
+      } else if (k === 'Enter') prompt();
+      else if (k === 'Backspace' || k === 'Delete') undo();
+      else if (!['Escape', 'Shift', 'CapsLock', 'Meta', 'Control', 'Alt'].includes(k)) stray(8, [12, 26]);
+      hideHint();
+    }
+
+    // Idle: ask again, once.
+    function remind() {
+      if (!busy) prompt();
+    }
+
+    function set(v) {
+      on = !!v;
+      btnGuide.classList.toggle('on', on);
+      try { localStorage.setItem('rl-guide', on ? 'on' : 'off'); } catch (_) { /* ignore */ }
+      clearTimeout(nextTimer);
+      clearTimeout(revertTimer);
+      if (on) {
+        hideHint();
+        begin();
+      } else {
+        busy = false;
+        guideEl.classList.add('hidden');
+        wordEl.textContent = '';
+        letters.length = 0;
+        layout();
+      }
+    }
+
+    return { key, remind, set, get on() { return on; } };
+  })();
+
+  // ---------------------------------------------------------------------------
   // Idle hint
   // ---------------------------------------------------------------------------
 
@@ -921,7 +1133,9 @@
   function scheduleHint() {
     clearTimeout(idleTimer);
     idleTimer = setTimeout(() => {
-      if (started && !letters.length) hint.classList.remove('hidden');
+      if (!started) return;
+      if (Guide.on) Guide.remind();
+      else if (!letters.length) hint.classList.remove('hidden');
     }, 8000);
   }
 
@@ -947,6 +1161,7 @@
     FX.confetti(FX.width / 2, FX.height / 2, 80);
     FX.unicorn();
     scheduleHint();
+    if (guidePref) Guide.set(true);
   }
 
   // ---------------------------------------------------------------------------
@@ -967,16 +1182,20 @@
     return true;
   }
 
+  // Keys that make no letter still do something fun.
+  function stray(count = 10, size) {
+    FX.burst(rand(FX.width * 0.2, FX.width * 0.8), rand(FX.height * 0.2, FX.height * 0.8), { count, size });
+    Sound.sparkle();
+  }
+
   function handleKey(k) {
     if (!takeToken()) return;
+    if (Guide.on) { Guide.key(k); return; }
     if ([...k].length === 1) {
       if (isLetter(k)) addChar(k.toLocaleUpperCase());
       else if (isDigit(k)) addChar(k);
       else if (k === ' ') celebrate();
-      else {
-        FX.burst(rand(FX.width * 0.2, FX.width * 0.8), rand(FX.height * 0.2, FX.height * 0.8), { count: 10 });
-        Sound.sparkle();
-      }
+      else stray();
       return;
     }
     switch (k) {
@@ -995,9 +1214,8 @@
       case 'Alt':
         break;
       default:
-        // Arrow keys, Tab, function keys and friends still do something fun.
-        FX.burst(rand(FX.width * 0.2, FX.width * 0.8), rand(FX.height * 0.2, FX.height * 0.8), { count: 8, size: [12, 26] });
-        Sound.sparkle();
+        // Arrow keys, Tab, function keys and friends.
+        stray(8, [12, 26]);
     }
   }
 
@@ -1059,6 +1277,13 @@
   // Controls
   // ---------------------------------------------------------------------------
 
+  btnGuide.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (!started) start();
+    Guide.set(!Guide.on);
+    btnGuide.blur();
+  });
+
   btnMusic.addEventListener('click', (e) => {
     e.preventDefault();
     if (!started) start();
@@ -1100,6 +1325,7 @@
   document.addEventListener('webkitfullscreenchange', onFullscreenChange);
 
   btnMusic.textContent = musicPref ? '🎵' : '🔇';
+  btnGuide.classList.toggle('on', guidePref);
 
   // ---------------------------------------------------------------------------
   // Guards against accidental navigation and other surprises

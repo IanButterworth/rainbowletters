@@ -200,6 +200,24 @@ body {
   animation: bye 0.35s ease-in forwards;
 }
 
+/* Word hunt: the slots still to be found, the next one pulsing */
+
+.letter.ghost {
+  padding: 0.12em 0.03em; /* same box as .glyph so the row does not shift when a slot fills */
+  color: #fff;
+  opacity: 0.5;
+  filter: drop-shadow(0 0.05em 0.1em rgba(176, 90, 160, 0.35));
+}
+
+.letter.ghost.want {
+  animation: want 1s ease-in-out infinite;
+}
+
+@keyframes want {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50%      { transform: scale(1.15); opacity: 1; }
+}
+
 @keyframes bye {
   to { transform: scale(0) rotate(35deg); opacity: 0; }
 }
@@ -265,6 +283,60 @@ body {
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50%      { transform: translateY(-3vmin); }
+}
+
+/* ---------- Word hunt prompt ---------- */
+
+#guide {
+  position: absolute;
+  top: 3vh;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 96vw;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+#guide.hidden { opacity: 0; }
+
+.guide-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5vmin;
+  padding: 1vmin 4vmin;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 1vmin 3vmin rgba(255, 120, 200, 0.25);
+}
+
+.guide-inner.wiggle {
+  animation: wiggle 0.6s ease-in-out;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  20%      { transform: rotate(-4deg) scale(1.06); }
+  50%      { transform: rotate(4deg) scale(1.06); }
+  80%      { transform: rotate(-2deg) scale(1.02); }
+}
+
+.guide-emoji {
+  font-size: 12vmin;
+  line-height: 1;
+  animation: bounce 1.6s ease-in-out infinite;
+}
+
+.guide-msg {
+  white-space: pre-wrap;
+  text-align: center;
+  font-size: 5.5vmin;
+  line-height: 1;
+  color: #b05aa0;
+}
+
+.guide-letter {
+  font-size: 2.4em;
 }
 
 /* ---------- Word garden (previously typed words) ---------- */
@@ -351,6 +423,12 @@ body {
 }
 
 #controls button:focus { outline: none; }
+
+#controls button.on {
+  opacity: 1;
+  background: #fff;
+  box-shadow: 0 0 0 0.7vmin rgba(255, 120, 220, 0.45), 0 3px 10px rgba(255, 120, 200, 0.3);
+}
 
 body.is-full #btn-full { display: none; }
 
