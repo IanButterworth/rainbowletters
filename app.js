@@ -388,8 +388,9 @@
 
     function best(voices) {
       for (const name of pack.voices) {
-        const v = voices.find((x) => x.name.includes(name));
-        if (v) return v;
+        const named = voices.filter((v) => v.name.includes(name));
+        // Someone who downloaded the Enhanced or Premium voice wants to hear it.
+        if (named.length) return named.find((v) => /Enhanced|Premium/.test(v.name)) || named[0];
       }
       // A voice on the machine beats one that needs the network, so it still works offline.
       return voices.find((v) => v.localService) || voices.find((v) => v.default) || voices[0] || null;
