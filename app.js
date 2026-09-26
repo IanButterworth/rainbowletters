@@ -384,19 +384,27 @@
     let voice = null;
     let pack = null;   // the current language pack: preferred voice names and a BCP 47 tag
 
-    // Pick a voice for the current language: a preferred name first, then any
-    // voice for that language. With no match the utterance still carries the
-    // language tag so the engine can choose.
-    function choose() {
-      if (!synth || !pack) return;
-      const code = pack.speech.slice(0, 2).toLowerCase();
-      const voices = synth.getVoices().filter((v) => (v.lang || '').toLowerCase().replace('_', '-').startsWith(code));
-      voice = null;
+    const tagOf = (v) => (v.lang || '').toLowerCase().replace('_', '-');
+
+    function best(voices) {
       for (const name of pack.voices) {
         const v = voices.find((x) => x.name.includes(name));
-        if (v) { voice = v; return; }
+        if (v) return v;
       }
-      voice = voices.find((v) => v.default) || voices.find((v) => v.localService) || voices[0] || null;
+      // A voice on the machine beats one that needs the network, so it still works offline.
+      return voices.find((v) => v.localService) || voices.find((v) => v.default) || voices[0] || null;
+    }
+
+    // Pick a voice for the current language: a preferred name first, then any
+    // voice for that language. With no match the utterance still carries the
+    // language tag so the engine can choose. British English must not settle
+    // for an American voice while a British one is installed, so voices from
+    // the right region are tried before the rest of the language.
+    function choose() {
+      if (!synth || !pack) return;
+      const tag = pack.speech.toLowerCase();
+      const all = synth.getVoices().filter((v) => tagOf(v).startsWith(tag.slice(0, 2)));
+      voice = best(all.filter((v) => tagOf(v).startsWith(tag))) || best(all);
     }
 
     if (synth) synth.addEventListener('voiceschanged', choose);
@@ -834,8 +842,14 @@
       const saved = localStorage.getItem('rl-lang');
       if (saved && LANGS.data[saved]) return saved;
     } catch (_) { /* ignore */ }
-    const wanted = (navigator.languages || [navigator.language || '']).map((l) => l.slice(0, 2).toLowerCase());
-    return wanted.find((l) => LANGS.data[l]) || LANGS.order[0];
+    const wanted = (navigator.languages || [navigator.language || '']).map((l) => l.toLowerCase().replace('_', '-'));
+    const codes = LANGS.order;
+    for (const l of wanted) {
+      // A full tag wins, so en-US opens in American English and en-GB in British.
+      const match = codes.find((c) => c.toLowerCase() === l) || codes.find((c) => c.toLowerCase() === l.slice(0, 2));
+      if (match) return match;
+    }
+    return codes[0];
   }
 
   setLanguage(initialLang());

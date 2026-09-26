@@ -70,8 +70,8 @@ window.RL_LANGUAGES = (() => {
 
     en: {
       name: 'English',
-      speech: 'en-US',
-      voices: ['Samantha', 'Karen', 'Moira', 'Tessa', 'Google US English', 'Google UK English Female', 'Microsoft Aria', 'Microsoft Zira', 'Daniel', 'Alex'],
+      speech: 'en-GB',
+      voices: ['Kate', 'Serena', 'Stephanie', 'Martha', 'Jamie', 'Shelley', 'Flo', 'Google UK English Female', 'Microsoft Sonia', 'Microsoft Libby', 'Microsoft Hazel'],
       ui: {
         title: 'Rainbow Letters',
         tap: 'Press any key or tap to play',
@@ -404,6 +404,14 @@ window.RL_LANGUAGES = (() => {
     },
   };
 
+  // American English shares the pictures, words and text; only the accent differs.
+  data['en-US'] = {
+    ...data.en,
+    name: 'American English',
+    speech: 'en-US',
+    voices: ['Samantha', 'Ava', 'Allison', 'Susan', 'Kathy', 'Google US English', 'Microsoft Aria', 'Microsoft Zira', 'Alex'],
+  };
+
   // The order the picker shows them in; the first is also the fallback default.
-  return { order: ['en', 'es', 'sv', 'fr', 'de', 'pt', 'it'], data };
+  return { order: ['en', 'en-US', 'es', 'sv', 'fr', 'de', 'pt', 'it'], data };
 })();
