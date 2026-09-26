@@ -147,7 +147,9 @@
       comp.connect(ctx.destination);
 
       master = ctx.createGain();
-      master.gain.value = 0.9;
+      // Speech cannot go above full volume, so everything synthesised sits under
+      // it and the letters and words stay the loudest thing on the page.
+      master.gain.value = 0.6;
       master.connect(comp);
 
       reverb = makeReverb();
@@ -297,7 +299,7 @@
       beat = 0;
       musicTimer = setInterval(tick, 100);
       music.gain.cancelScheduledValues(ctx.currentTime);
-      music.gain.setTargetAtTime(0.3, ctx.currentTime, 0.6);
+      music.gain.setTargetAtTime(0.25, ctx.currentTime, 0.6);
     }
 
     function stopMusic() {
