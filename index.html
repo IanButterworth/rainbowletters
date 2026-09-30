@@ -13,6 +13,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
   <!-- Bump ?v= whenever style.css, languages.js or app.js change: GitHub Pages caches them for 10 minutes. -->
   <link rel="stylesheet" href="style.css?v=11">
+  <!-- Google Analytics 4 for ianbtw.com, loaded only there so local play isn't counted. -->
+  <script>
+    if (location.hostname === "ianbtw.com") {
+      const s = document.createElement("script");
+      s.async = true;
+      s.src = "https://www.googletagmanager.com/gtag/js?id=G-RBKP6YFTXQ";
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { dataLayer.push(arguments); };
+      gtag("js", new Date());
+      gtag("config", "G-RBKP6YFTXQ");
+    }
+  </script>
 </head>
 <body>
   <div class="sky" aria-hidden="true">
