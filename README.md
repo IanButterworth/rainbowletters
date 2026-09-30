@@ -1,6 +1,6 @@
 # Rainbow Letters 🦄
 
-**Play it here: https://ianbutterworth.github.io/rainbowletters/**
+**Play it here: https://ianbtw.com/rainbowletters/**
 
 A typing playground for small children. Every key press pops a big rainbow letter onto the screen with sparkles, a music-box note and a voice saying the letter. Space or Enter finishes the word: it wiggles, floats away, a unicorn flies past, and the word is spoken aloud. Real words the child might know (`CAT`, `DOG`, `RAINBOW`, `MUM`, `POOP`...) rain down their matching emoji.
 
