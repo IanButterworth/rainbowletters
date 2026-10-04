@@ -1414,11 +1414,21 @@
     hideHint();
   });
 
-  window.addEventListener('pointerup', () => {
-    if (coarsePointer) {
-      try { touchInput.focus({ preventScroll: true }); } catch (_) { /* ignore */ }
+  // iOS opens the keyboard only when focus moves to the input during a touch. Once
+  // the keyboard is closed, the input can keep its focus, and focusing it again does
+  // nothing; so it is blurred first. This listens for touchend, which a touch that
+  // moved still gets; it ends in pointercancel rather than pointerup.
+  function summonKeyboard() {
+    if (!coarsePointer) return;
+    const vv = window.visualViewport;
+    const keyboardUp = vv && vv.height < window.innerHeight * 0.85;
+    if (document.activeElement === touchInput) {
+      if (keyboardUp) return;
+      touchInput.blur();
     }
-  });
+    try { touchInput.focus({ preventScroll: true }); } catch (_) { /* ignore */ }
+  }
+  window.addEventListener('touchend', summonKeyboard);
 
   let lastTrail = 0;
   window.addEventListener('pointermove', (e) => {
