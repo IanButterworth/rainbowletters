@@ -1454,26 +1454,17 @@
     hideHint();
   });
 
-  // iOS opens the keyboard only when focus moves to the input during a touch. Once
-  // the keyboard is closed, the input can keep its focus, and focusing it again does
-  // nothing; so it is blurred first. This listens for touchend, which a touch that
-  // moved still gets; it ends in pointercancel rather than pointerup.
-  function summonKeyboard() {
-    if (!coarsePointer) return;
-    const vv = window.visualViewport;
-    const keyboardUp = vv && vv.height < window.innerHeight * 0.85;
-    if (document.activeElement === touchInput) {
-      if (keyboardUp) return;
-      touchInput.blur();
-    }
-    try { touchInput.focus({ preventScroll: true }); } catch (_) { /* ignore */ }
-  }
+  // Most taps land on the input itself, which covers the play area on touch
+  // screens, and the browser opens the keyboard. A tap elsewhere, such as the
+  // start screen, focuses it from here.
   window.addEventListener('touchend', (e) => {
     const onButton = e.target && e.target.closest && e.target.closest('button');
     if (!started && !onButton) start();
     Sound.resume();
     Voice.unlock();
-    summonKeyboard();
+    if (coarsePointer && e.target !== touchInput && document.activeElement !== touchInput) {
+      try { touchInput.focus({ preventScroll: true }); } catch (_) { /* ignore */ }
+    }
   });
 
   let lastTrail = 0;

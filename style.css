@@ -569,4 +569,19 @@ body.ios #btn-full { display: none; }
   opacity: 0;
   font-size: 16px; /* 16px stops iOS from zooming on focus */
   pointer-events: none;
+  /* The page turns selection off, and iOS won't open the keyboard for a field without it. */
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* On touch screens it covers the play area, under the buttons and word bubbles,
+   so a tap lands on it and opens the keyboard as any text field would. */
+@media (pointer: coarse) {
+  #touch-input {
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: auto;
+    caret-color: transparent;
+  }
 }
