@@ -508,8 +508,10 @@
 
     function resize() {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
-      W = window.innerWidth;
-      H = window.innerHeight;
+      // The page, which in an iOS home-screen app is taller than the window.
+      const box = document.body.getBoundingClientRect();
+      W = box.width || window.innerWidth;
+      H = box.height || window.innerHeight;
       canvas.width = Math.floor(W * dpr);
       canvas.height = Math.floor(H * dpr);
       canvas.style.width = W + 'px';

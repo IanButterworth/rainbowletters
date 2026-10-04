@@ -28,6 +28,14 @@ body {
   cursor: default;
 }
 
+/* A home-screen app on iOS 26 with a see-through status bar gets a window
+   shorter than the screen, and clips fixed elements to it. Only 100lvh is the
+   full height, so there the page takes that height and nothing is fixed. */
+.standalone,
+.standalone body { height: 100lvh; }
+.standalone body { position: relative; }
+.standalone #touch-input { position: absolute; }
+
 @keyframes sky {
   from { background-position: 0% 0%; }
   to   { background-position: 100% 100%; }

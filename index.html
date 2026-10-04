@@ -8,6 +8,9 @@
   <meta name="apple-mobile-web-app-title" content="Rainbow Letters">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#ffd6f5">
+  <script>
+    if (navigator.standalone === true || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches) document.documentElement.classList.add('standalone');
+  </script>
   <title>Rainbow Letters</title>
   <link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -16,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
   <!-- Bump ?v= whenever style.css, languages.js or app.js change: GitHub Pages caches them for 10 minutes. -->
-  <link rel="stylesheet" href="style.css?v=17">
+  <link rel="stylesheet" href="style.css?v=18">
   <!-- Google Analytics 4 for ianbtw.com, loaded only there so local play isn't counted. -->
   <script>
     if (location.hostname === "ianbtw.com") {
@@ -84,7 +87,7 @@
   <input id="touch-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="characters"
          spellcheck="false" aria-hidden="true" tabindex="-1">
 
-  <script src="languages.js?v=17"></script>
-  <script src="app.js?v=17"></script>
+  <script src="languages.js?v=18"></script>
+  <script src="app.js?v=18"></script>
 </body>
 </html>
