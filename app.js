@@ -355,6 +355,12 @@
       });
     }
 
+    // A swish for letters thrown away.
+    function toss() {
+      if (!ctx) return;
+      whoosh(ctx.currentTime, 0.14);
+    }
+
     function sparkle() {
       if (!ctx) return;
       const t = ctx.currentTime;
@@ -374,7 +380,7 @@
       whoosh(t, big ? 0.16 : 0.1);
     }
 
-    return { init, resume, suspend, startMusic, stopMusic, pling, pop, nope, sparkle, fanfare };
+    return { init, resume, suspend, startMusic, stopMusic, pling, pop, nope, toss, sparkle, fanfare };
   })();
 
   // ---------------------------------------------------------------------------
@@ -891,7 +897,41 @@
     el.appendChild(glyph);
   }
 
+  // Matched in capitals without accents, and with ß as SS.
+  function swearing(text) {
+    const s = normalize(text).toLocaleUpperCase(langCode).replace(/ẞ/g, 'SS');
+    const { end, alone } = lang.swears;
+    return [...end, ...LANGS.data.en.swears.end].some((w) => s.endsWith(w)) || alone.includes(s);
+  }
+
+  // The letters tumble off the bottom of the screen, and the one that would have
+  // finished the swear word is never shown or spoken.
+  function tossAway() {
+    const clone = wordEl.cloneNode(true);
+    clone.removeAttribute('id');
+    for (const el of clone.children) {
+      el.style.setProperty('--tx', rand(-30, 30).toFixed(1) + 'vw');
+      el.style.setProperty('--spin', Math.round(rand(-300, 300)) + 'deg');
+      el.style.setProperty('--wait', rand(0, 0.12).toFixed(2) + 's');
+    }
+    const fly = document.createElement('div');
+    fly.className = 'tossaway';
+    fly.appendChild(clone);
+    stage.appendChild(fly);
+    setTimeout(() => fly.remove(), 1300);
+
+    wordEl.textContent = '';
+    letters.length = 0;
+    layout();
+    Sound.toss();
+    hideHint();
+  }
+
   function addChar(ch) {
+    if (swearing(letters.map((l) => l.ch).join('') + ch)) {
+      tossAway();
+      return;
+    }
     if (letters.length >= MAX_LETTERS) {
       const oldest = letters.shift();
       vanish(oldest.el);

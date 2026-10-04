@@ -18,6 +18,7 @@ The live site is a Cloudflare Worker serving this folder as static files (`wrang
 - Type letters or numbers: they appear in a big rainbow row (up to 20; after that the oldest one floats off).
 - Space or Enter: celebrates the word. Finished words collect as little bubbles along the bottom.
 - Backspace: pops the last letter.
+- Swear words never form: the key that would finish one throws the letters away instead (they tumble off the bottom with a swish), and that last letter is not shown or spoken. The lists are per language in `languages.js`.
 - Any other key, click or tap: sparkles.
 - Key mashing is throttled: bursts of 8 keys go through, then about 8 per second, and holding a key down does not repeat. The voice speaks the current letter and the latest one waiting, never a backlog.
 - Moving the mouse leaves a rainbow trail.

@@ -404,6 +404,46 @@ window.RL_LANGUAGES = (() => {
     },
   };
 
+  // Swear words, in capitals without accents. The game throws the letters away just
+  // before one is finished, so it is never shown whole or spoken. Words in `end` are
+  // caught at the end of any run of letters. Words in `alone` only count when they
+  // are the whole run, because they also sit inside everyday words (GRASS,
+  // COMPUTADORA, PANIQUE). The English `end` words count in every language; its
+  // `alone` ones only in English, since CUM and FAG begin CUMPLEAÑOS and FÅGEL.
+  const list = (text) => text.trim().split(/\s+/);
+  const swears = {
+    en: {
+      end: list(`FUCK FUK SHIT CUNT BITCH WANK TWAT BOLLOCK BOLLOX BASTARD PISS SLUT WHORE
+                 NIGGER NIGGA FAGGOT RETARD DILDO JIZZ BLOWJOB`),
+      alone: list(`ASS ARSE DICK COCK PRICK KNOB TITS TITTY TITTIES CUM FAG`),
+    },
+    es: {
+      end: list(`MIERDA JODER JODIDO CABRON GILIPOLLA MARICON PENDEJO CHINGA HIJOPUTA CARAJO COJON`),
+      alone: list(`PUTA PUTO CONO CULO POLLA HOSTIA`),
+    },
+    fr: {
+      end: list(`MERDE PUTAIN CONNARD CONNASSE SALOPE ENCULE BRANLEUR FOUTRE`),
+      alone: list(`PUTE NIQUE BITE PEDE BORDEL`),
+    },
+    de: {
+      end: list(`SCHEISS FICK ARSCHLOCH FOTZE WICHSER SCHLAMPE HURENSOHN`),
+      alone: list(`ARSCH HURE TITTEN`),
+    },
+    pt: {
+      end: list(`MERDA CARALHO FODER FODIDO BUCETA CACETE VIADO PUTARIA ARROMBADO`),
+      alone: list(`PUTA PUTO PORRA FODA`),
+    },
+    it: {
+      end: list(`CAZZO STRONZ PUTTANA MINCHIA COGLION FANCULO MERDA`),
+      alone: list(`FIGA TROIA CULO`),
+    },
+    sv: {
+      end: list(`JAVLA JAVEL FITTA KNULL ROVHAL HELVETE`),
+      alone: list(`FAN KUK HORA`),
+    },
+  };
+  for (const [code, words] of Object.entries(swears)) data[code].swears = words;
+
   // American English shares the pictures, words and text; only the accent differs.
   data['en-US'] = {
     ...data.en,

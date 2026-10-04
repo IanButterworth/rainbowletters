@@ -260,6 +260,27 @@ body {
 /* The clone must not replay the letters' pop-in, or the word blinks out first. */
 .flyaway .glyph { animation: none; }
 
+/* A swear word in the making: a clone whose letters tumble off the bottom */
+
+.tossaway {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.tossaway .letter {
+  animation: toss 1.1s cubic-bezier(0.5, -0.4, 0.9, 0.6) var(--wait) forwards;
+}
+
+.tossaway .glyph { animation: none; }
+
+@keyframes toss {
+  to { transform: translate(var(--tx), 110vh) rotate(var(--spin)); opacity: 0.6; }
+}
+
 .wordemoji {
   line-height: 1;
   margin-top: 0.1em;
