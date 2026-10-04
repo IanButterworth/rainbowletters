@@ -137,6 +137,9 @@ body {
 #stage {
   position: absolute;
   inset: 0;
+  /* Kept clear of the on-screen keyboard. */
+  top: var(--visible-top, 0px);
+  bottom: var(--covered, 0px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -379,7 +382,7 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 2vh;
+  bottom: calc(var(--covered, 0px) + 2vh);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

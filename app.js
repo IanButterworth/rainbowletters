@@ -869,11 +869,28 @@
 
   const letters = [];
 
+  // An on-screen keyboard on iPhone and iPad covers the page rather than shrinking
+  // it, so the stage and the word bubbles are fitted to the part still visible.
+  const viewport = window.visualViewport;
+
+  function fitVisible() {
+    if (!viewport) return;
+    const css = document.documentElement.style;
+    const covered = window.innerHeight - viewport.offsetTop - viewport.height;
+    css.setProperty('--visible-top', viewport.offsetTop + 'px');
+    css.setProperty('--covered', Math.max(0, covered) + 'px');
+    layout();
+  }
+  if (viewport) {
+    viewport.addEventListener('resize', fitVisible);
+    viewport.addEventListener('scroll', fitVisible);
+  }
+
   function layout() {
     const n = wordEl.querySelectorAll('.letter:not(.bye)').length;
     if (!n) { wordEl.style.fontSize = ''; return; }
     const W = window.innerWidth * 0.94;
-    const H = window.innerHeight;
+    const H = viewport ? viewport.height : window.innerHeight;
     const rows = n <= 10 ? 1 : (n <= 20 ? 2 : 3);
     const perRow = Math.ceil(n / rows);
     const size = Math.min(H * 0.42, (H * 0.6) / (rows * 1.15), W / (perRow * 0.74));
