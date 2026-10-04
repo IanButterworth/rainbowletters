@@ -74,11 +74,13 @@ body {
   position: absolute;
   left: 50%;
   bottom: -14vmax;
-  width: 170vmax;
-  height: 85vmax;
+  /* Tall enough for the whole arc, which reaches about 101vmax up; a shorter box
+     cut its top off on portrait screens. */
+  width: 240vmax;
+  height: 120vmax;
   transform: translateX(-50%);
   opacity: 0.7;
-  background: radial-gradient(ellipse at 50% 100%,
+  background: radial-gradient(circle farthest-side at 50% 100%,
     transparent 0 56%,
     hsla(300, 95%, 80%, 0.7) 56.5% 60%,
     hsla(245, 95%, 80%, 0.7) 60.5% 64%,
@@ -491,7 +493,7 @@ body.ios #btn-full { display: none; }
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.4vmin 1.2vmin;
+  gap: max(0.4vmin, 2px) max(1.2vmin, 4px);
   margin-top: 1.5vmin;
 }
 
@@ -499,14 +501,15 @@ body.ios #btn-full { display: none; }
 
 .mode,
 .lang {
-  padding: 0.8vmin 1.6vmin;
+  /* Sized to the screen, but never too small to read or tap on a phone. */
+  padding: max(0.8vmin, 7px) max(1.6vmin, 11px);
   border: 0;
   border-radius: 99px;
   background: none;
   color: rgba(176, 90, 160, 0.55);
   font-family: inherit;
   font-weight: 600;
-  font-size: 2.2vmin;
+  font-size: max(2.2vmin, 14px);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
