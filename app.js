@@ -430,6 +430,7 @@
     let current = null;   // referenced so Chrome cannot garbage-collect it mid-speech
     let next = null;
     let watchdog = null;
+    let heard = false;
 
     function speakNow(req) {
       const u = new SpeechSynthesisUtterance(req.text);
@@ -449,12 +450,28 @@
         next = null;
         if (n) speakNow(n);
       };
+      u.onstart = () => { heard = true; };
       u.onend = done;
       u.onerror = done;
       clearTimeout(watchdog);
       // If the engine never reports the end, assume it stalled and move on.
       watchdog = setTimeout(done, 2500 + req.text.length * 120);
-      try { synth.speak(u); } catch (_) { done(); }
+      try {
+        // iOS can leave the engine paused after the page was in the background.
+        if (synth.paused) synth.resume();
+        synth.speak(u);
+      } catch (_) { done(); }
+    }
+
+    // iOS only lets speech start during a touch, and may not report an end for
+    // speech it blocked. So until something has been heard, each touch speaks a
+    // silent utterance; once one is allowed, later speech goes through.
+    function unlock() {
+      if (!synth || heard) return;
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      u.onstart = () => { heard = true; };
+      try { synth.speak(u); } catch (_) { /* ignore */ }
     }
 
     // `then` runs once this utterance has finished (or been given up on), but
@@ -466,7 +483,7 @@
       else speakNow(req);
     }
 
-    return { say, setLanguage };
+    return { say, unlock, setLanguage };
   })();
 
   // ---------------------------------------------------------------------------
@@ -1422,7 +1439,8 @@
   window.addEventListener('pointerdown', (e) => {
     // Buttons, including the language names on the start screen, must not start the game or spark.
     if (e.target && e.target.closest && e.target.closest('button')) return;
-    if (!started) start();
+    // A touch starts the game when it ends instead: iOS blocks sound and speech before then.
+    if (!started && e.pointerType !== 'touch') start();
     Sound.resume();
     if (e.timeStamp - lastTap < 80) return;
     lastTap = e.timeStamp;
@@ -1445,7 +1463,13 @@
     }
     try { touchInput.focus({ preventScroll: true }); } catch (_) { /* ignore */ }
   }
-  window.addEventListener('touchend', summonKeyboard);
+  window.addEventListener('touchend', (e) => {
+    const onButton = e.target && e.target.closest && e.target.closest('button');
+    if (!started && !onButton) start();
+    Sound.resume();
+    Voice.unlock();
+    summonKeyboard();
+  });
 
   let lastTrail = 0;
   window.addEventListener('pointermove', (e) => {
