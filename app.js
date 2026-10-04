@@ -49,6 +49,11 @@
   const isLetter = (ch) => /\p{L}/u.test(ch);
   const isDigit = (ch) => /\p{N}/u.test(ch);
 
+  // iPads report themselves as Macs, but Macs have no touch screen.
+  const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  document.body.classList.toggle('ios', iOS);
+
   let started = false;
   let musicPref = true;
   let modePref = 'free';

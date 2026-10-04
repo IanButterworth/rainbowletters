@@ -382,7 +382,7 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: calc(var(--covered, 0px) + 2vh);
+  bottom: calc(var(--covered, 0px) + 2vh + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -434,8 +434,9 @@ body {
 
 #controls {
   position: absolute;
-  top: 1.5vmin;
-  right: 1.5vmin;
+  /* Clear of the notch and status bar when added to the home screen. */
+  top: calc(1.5vmin + env(safe-area-inset-top, 0px));
+  right: calc(1.5vmin + env(safe-area-inset-right, 0px));
   display: flex;
   gap: 1vmin;
   z-index: 10;
@@ -467,7 +468,13 @@ body {
   box-shadow: 0 0 0 0.7vmin rgba(255, 120, 220, 0.45), 0 3px 10px rgba(255, 120, 200, 0.3);
 }
 
-body.is-full #btn-full { display: none; }
+/* No full screen button where it can't work (iOS) or isn't needed (a home screen app). */
+body.is-full #btn-full,
+body.ios #btn-full { display: none; }
+
+@media (display-mode: fullscreen), (display-mode: standalone) {
+  #btn-full { display: none; }
+}
 
 /* ---------- Mode and language pickers (start screen only) ---------- */
 
